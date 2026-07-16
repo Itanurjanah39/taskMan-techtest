@@ -10,13 +10,12 @@ import androidx.lifecycle.MutableLiveData;
 import com.technicaltest.taskman.data.auth.SessionManager;
 import com.technicaltest.taskman.data.model.LoginResponse;
 import com.technicaltest.taskman.data.repository.AuthRepository;
+import com.technicaltest.taskman.utils.Resource;
 
 public class LoginViewModel extends AndroidViewModel {
 
     private final AuthRepository authRepository;
-    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
-    private final MutableLiveData<LoginResponse> loginResponse = new MutableLiveData<>();
-    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<Resource<LoginResponse>> loginResult = new MutableLiveData<>();
 
     public LoginViewModel(@NonNull Application application) {
         super(application);
@@ -24,41 +23,21 @@ public class LoginViewModel extends AndroidViewModel {
         this.authRepository = new AuthRepository(sessionManager);
     }
 
-    public LiveData<Boolean> getIsLoading() {
-        return isLoading;
-    }
-
-    public LiveData<LoginResponse> getLoginResponse() {
-        return loginResponse;
-    }
-
-    public LiveData<String> getErrorMessage() {
-        return errorMessage;
+    public LiveData<Resource<LoginResponse>> getLoginResult() {
+        return loginResult;
     }
 
     public void login(String email, String password) {
         if (email == null || email.trim().isEmpty()) {
-            errorMessage.setValue("Email cannot be empty");
+            loginResult.setValue(Resource.error("Email cannot be empty", null));
             return;
         }
         if (password == null || password.trim().isEmpty()) {
-            errorMessage.setValue("Password cannot be empty");
+            loginResult.setValue(Resource.error("Password cannot be empty", null));
             return;
         }
 
-        isLoading.setValue(true);
-        authRepository.login(email, password, new AuthRepository.LoginCallback() {
-            @Override
-            public void onSuccess(LoginResponse response) {
-                isLoading.setValue(false);
-                loginResponse.setValue(response);
-            }
-
-            @Override
-            public void onError(String error) {
-                isLoading.setValue(false);
-                errorMessage.setValue(error);
-            }
-        });
+        loginResult.setValue(Resource.loading(null));
+        authRepository.login(email, password, resource -> loginResult.setValue(resource));
     }
 }

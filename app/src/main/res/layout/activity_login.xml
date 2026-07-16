@@ -52,24 +52,41 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_8"
                         android:text="Login Ke Akun Anda"
                         style="@style/Text.Title"
                         android:textColor="@color/text_primary" />
 
-                    <EditText
+                    <TextView
+                        android:layout_marginStart="@dimen/space_8"
                         android:layout_marginTop="@dimen/space_16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/email"
+                        style="@style/Text.Input"
+                        android:textColor="@color/text_primary" />
+
+                    <EditText
+                        android:layout_marginTop="4dp"
                         android:id="@+id/et_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_edittext"
-                        android:hint="@string/email"
+                        android:hint="ex. test@example.com"
                         android:inputType="textEmailAddress"
-                        android:textColor="@color/text_primary"
                         android:textColorHint="@color/text_hint"
                         style="@style/Text.Input" />
 
+                    <TextView
+                        android:layout_marginStart="@dimen/space_8"
+                        android:layout_marginTop="@dimen/space_16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/password"
+                        style="@style/Text.Input"
+                        android:textColor="@color/text_primary" />
                     <LinearLayout
-                        android:layout_marginTop="@dimen/space_12"
+                        android:layout_marginTop="4dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -81,9 +98,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
-                            android:hint="@string/password"
+                            android:hint="********"
                             android:inputType="textPassword"
-                            android:textColor="@color/text_primary"
                             android:textColorHint="@color/text_hint"
                             style="@style/Text.Input"/>
 
@@ -96,15 +112,14 @@
                     </LinearLayout>
 
                     <androidx.appcompat.widget.AppCompatButton
-                        android:layout_marginTop="22dp"
+                        android:layout_marginVertical="@dimen/space_32"
                         android:id="@+id/btn_login"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/button_height"
                         android:background="@drawable/bg_button_primary"
                         android:text="@string/login"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
+                       style="@style/Text.Button"
+                        android:textAllCaps="false"
                         android:elevation="2dp" />
 
                 </LinearLayout>

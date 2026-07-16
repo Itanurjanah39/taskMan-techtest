@@ -14,8 +14,8 @@
         <item name="android:statusBarColor">@color/primary</item>
         <item name="android:windowLightStatusBar">true</item>
         <!-- Font Default -->
-        <item name="fontFamily">@font/publicsans</item>
-        <item name="android:fontFamily">@font/publicsans</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:fontFamily">@font/poppins</item>
         <item name="android:textColor">@color/text_primary</item>
     </style>
 

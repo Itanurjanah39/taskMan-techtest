@@ -5,10 +5,10 @@ import com.technicaltest.taskman.data.model.LoginRequest;
 import com.technicaltest.taskman.data.model.LoginResponse;
 import com.technicaltest.taskman.data.network.ApiClient;
 import com.technicaltest.taskman.data.network.ApiService;
+import com.technicaltest.taskman.utils.ApiCallback;
+import com.technicaltest.taskman.utils.NetworkHelper;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class AuthRepository {
 
@@ -20,36 +20,27 @@ public class AuthRepository {
         this.sessionManager = sessionManager;
     }
 
-    public interface LoginCallback {
-        void onSuccess(LoginResponse response);
-        void onError(String errorMessage);
-    }
-
-    public void login(String email, String password, LoginCallback callback) {
+    public void login(String email, String password, ApiCallback<LoginResponse> callback) {
         LoginRequest request = new LoginRequest(email, password);
-        apiService.login(request).enqueue(new Callback<LoginResponse>() {
+        Call<LoginResponse> call = apiService.login(request);
+
+        NetworkHelper.enqueueCall(call, callback, new NetworkHelper.ResponseValidator<LoginResponse>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    LoginResponse loginResponse = response.body();
-                    if (loginResponse.isSuccess() && loginResponse.getData() != null) {
-                        sessionManager.saveSession(
-                                loginResponse.getData().getToken(),
-                                loginResponse.getData().getRole(),
-                                email
-                        );
-                        callback.onSuccess(loginResponse);
-                    } else {
-                        callback.onError(loginResponse.getMessage() != null ? loginResponse.getMessage() : "Login failed");
-                    }
-                } else {
-                    callback.onError("Error: " + response.code() + " " + response.message());
+            public boolean isValid(LoginResponse body) {
+                boolean valid = body.isSuccess() && body.getData() != null;
+                if (valid) {
+                    sessionManager.saveSession(
+                            body.getData().getToken(),
+                            body.getData().getRole(),
+                            email
+                    );
                 }
+                return valid;
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
-                callback.onError(t.getMessage() != null ? t.getMessage() : "Connection error");
+            public String getErrorMessage(LoginResponse body) {
+                return body.getMessage() != null ? body.getMessage() : "Login failed";
             }
         });
     }
