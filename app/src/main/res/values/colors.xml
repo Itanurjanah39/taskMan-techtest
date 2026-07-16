@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Primary -->
+    <color name="primary">#24B1B1</color>
+    <color name="primary_dark">#1F9A9A</color>
+    <color name="primary_light">#DDF7F7</color>
+
+    <!-- Secondary -->
+    <color name="secondary">#20A3A3</color>
+    <color name="secondary_light">#E7FAFA</color>
+
+    <!-- Background -->
+    <color name="background">#F9FAFB</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="card_background">#FFFFFF</color>
+
+    <!-- Text -->
+    <color name="text_primary">#1F2937</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="text_hint">#9CA3AF</color>
+    <color name="text_white">#FFFFFF</color>
+
+    <!-- Border -->
+    <color name="border">#E5E7EB</color>
+    <color name="divider">#F1F5F9</color>
+
+    <!-- Status -->
+    <color name="success">#22C55E</color>
+    <color name="success_light">#DCFCE7</color>
+
+    <color name="warning">#F59E0B</color>
+    <color name="warning_light">#FEF3C7</color>
+
+    <color name="error">#EF4444</color>
+    <color name="error_light">#FEE2E2</color>
+
+    <color name="info">#3B82F6</color>
+    <color name="info_light">#DBEAFE</color>
+
+    <!-- Pending Badge -->
+    <color name="pending_bg">#FFF7E6</color>
+    <color name="pending_text">#F59E0B</color>
+
+    <!-- Done Badge -->
+    <color name="done_bg">#DCFCE7</color>
+    <color name="done_text">#16A34A</color>
+
+    <!-- Delete -->
+    <color name="delete_red">#EF4444</color>
+
+    <!-- Icon -->
+    <color name="icon_default">#6B7280</color>
+    <color name="icon_active">#24B1B1</color>
+
+    <!-- Skeleton / Shimmer -->
+    <color name="shimmer_base">#ECEFF1</color>
+    <color name="shimmer_highlight">#F8F9FA</color>
+
+    <!-- Common -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+</resources>
