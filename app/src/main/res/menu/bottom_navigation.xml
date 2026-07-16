@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/home_active"
+        android:icon="@drawable/ic_home_selector"
         android:title="Home" />
 
     <item
         android:id="@+id/nav_task"
-        android:icon="@drawable/task_active"
+        android:icon="@drawable/ic_task_selector"
         android:title="Task" />
 
     <item
         android:id="@+id/nav_user"
-        android:icon="@drawable/user_active"
+        android:icon="@drawable/ic_user_selector"
         android:title="User" />
 </menu>

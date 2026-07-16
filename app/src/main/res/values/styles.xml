@@ -2,6 +2,8 @@
 
 <resources>
 
+    <style name="Text" />
+
     <style name="Text.Title">
 
         <item name="android:textSize">22sp</item>
@@ -15,8 +17,17 @@
     <style name="Text.Subtitle">
 
         <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
 
         <item name="android:textColor">@color/text_secondary</item>
+
+    </style>
+    <style name="Text.Input">
+
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+
+        <item name="android:textColor">@color/text_primary</item>
 
     </style>
 

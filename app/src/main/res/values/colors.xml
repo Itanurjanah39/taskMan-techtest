@@ -12,6 +12,7 @@
 
     <!-- Background -->
     <color name="background">#F9FAFB</color>
+    <color name="background_secondary">#f2fbfc</color>
     <color name="surface">#FFFFFF</color>
     <color name="card_background">#FFFFFF</color>
 

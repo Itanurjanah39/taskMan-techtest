@@ -2,6 +2,21 @@
     <!-- Base application theme. -->
     <style name="Theme.TaskMan" parent="Theme.MaterialComponents.Light.NoActionBar">
 
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorSecondary">@color/primary_light</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Warna Latar Belakang -->
+        <item name="android:windowBackground">@color/white</item>
+
+        <!-- Status Bar -->
+        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <!-- Font Default -->
+        <item name="fontFamily">@font/publicsans</item>
+        <item name="android:fontFamily">@font/publicsans</item>
+        <item name="android:textColor">@color/text_primary</item>
     </style>
 
 </resources>
