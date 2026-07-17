@@ -134,7 +134,7 @@ public class ProfileFragment extends Fragment {
     private void displayProfileData(ProfileResponse.Employee employee) {
         binding.tvName.setText(employee.getName());
         binding.tvRole.setText(employee.getRole());
-        binding.tvDivision.setText("Divisi : "+ employee.getDivision());
+        binding.tvCompany.setText(employee.getCompany());
     }
 
     private void showProfileDetailBottomSheet() {

@@ -1,6 +1,7 @@
 package com.technicaltest.taskman.utils;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -181,7 +182,7 @@ public class DialogUtils {
         if (task == null) {
             dialogBinding.tvDialogTitle.setText("Buat task baru");
             dialogBinding.tvDialogSubtitle.setText("Isi detail task dengan lengkap agar lebih terorganisir");
-            dialogBinding.btnSaveTask.setText("SIMPAN TASK");
+            dialogBinding.btnSaveTask.setText("Simpan Task");
 
             dialogBinding.etTaskTitle.setText("");
             dialogBinding.etTaskDescription.setText("");
@@ -189,7 +190,7 @@ public class DialogUtils {
         } else {
             dialogBinding.tvDialogTitle.setText("Edit task");
             dialogBinding.tvDialogSubtitle.setText("Perbarui detail task sesuai kebutuhan");
-            dialogBinding.btnSaveTask.setText("UPDATE TASK");
+            dialogBinding.btnSaveTask.setText("Update Task");
 
             dialogBinding.etTaskTitle.setText(task.getTitle());
             dialogBinding.etTaskDescription.setText(task.getDescription());
@@ -298,6 +299,45 @@ public class DialogUtils {
                     calendar.get(Calendar.MONTH),
                     calendar.get(Calendar.DAY_OF_MONTH)
             );
+
+            // Hide header layout programmatically to match the screenshot
+            try {
+                int headerId = context.getResources().getIdentifier("date_picker_header", "id", "android");
+                if (headerId != 0) {
+                    View header = datePickerDialog.getDatePicker().findViewById(headerId);
+                    if (header != null) {
+                        header.setVisibility(View.GONE);
+                    }
+                }
+                int layoutId = context.getResources().getIdentifier("day_picker_selector_layout", "id", "android");
+                if (layoutId != 0) {
+                    View layout = datePickerDialog.getDatePicker().findViewById(layoutId);
+                    if (layout != null) {
+                        layout.setVisibility(View.GONE);
+                    }
+                }
+            } catch (Exception e) {
+                // Fallback to prevent crashes
+            }
+
+            // Customize button text to BATAL and OK, and set their text colors to teal/primary
+            datePickerDialog.setOnShowListener(dialogInterface -> {
+                try {
+                    android.widget.Button positiveButton = datePickerDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                    android.widget.Button negativeButton = datePickerDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                    if (positiveButton != null) {
+                        positiveButton.setText("OK");
+                        positiveButton.setTextColor(ContextCompat.getColor(context, R.color.primary));
+                    }
+                    if (negativeButton != null) {
+                        negativeButton.setText("BATAL");
+                        negativeButton.setTextColor(ContextCompat.getColor(context, R.color.primary));
+                    }
+                } catch (Exception e) {
+                    // Ignore fallback
+                }
+            });
+
             datePickerDialog.show();
         };
 
@@ -328,10 +368,31 @@ public class DialogUtils {
             }
 
             TaskRequest request = new TaskRequest(title, description, selectedStatus[0], selectedType[0], deadline);
-            if (saveListener != null) {
-                saveListener.onSave(request);
-            }
-            dialog.dismiss();
+
+            // Set loading state
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+
+            dialogBinding.etTaskTitle.setEnabled(false);
+            dialogBinding.etTaskDescription.setEnabled(false);
+            dialogBinding.etTaskDeadline.setEnabled(false);
+            dialogBinding.layoutDeadline.setEnabled(false);
+            dialogBinding.btnClearDeadline.setEnabled(false);
+            dialogBinding.btnTypeHarian.setEnabled(false);
+            dialogBinding.btnTypeMingguan.setEnabled(false);
+            dialogBinding.btnTypeBulanan.setEnabled(false);
+            dialogBinding.btnStatusPending.setEnabled(false);
+            dialogBinding.btnStatusDone.setEnabled(false);
+
+            dialogBinding.btnSaveTask.setEnabled(false);
+            dialogBinding.btnSaveTask.setText(context.getString(R.string.loading));
+
+            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                if (saveListener != null) {
+                    saveListener.onSave(request);
+                }
+                dialog.dismiss();
+            }, 3000);
         });
 
         dialog.show();
