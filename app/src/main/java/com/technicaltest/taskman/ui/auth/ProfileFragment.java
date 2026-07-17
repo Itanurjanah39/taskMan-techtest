@@ -1,63 +1,37 @@
 package com.technicaltest.taskman.ui.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.technicaltest.taskman.R;
+import com.technicaltest.taskman.data.model.ProfileResponse;
+import com.technicaltest.taskman.data.viewmodel.ProfileViewModel;
+import com.technicaltest.taskman.databinding.DialogProfileDetailBinding;
 import com.technicaltest.taskman.databinding.FragmentProfileBinding;
+import com.technicaltest.taskman.utils.ImageLoader;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ProfileFragment extends Fragment {
 
     private FragmentProfileBinding binding;
+    private ProfileViewModel viewModel;
+    private ProfileResponse.Data currentProfile;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public ProfileFragment() {}
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ProfileFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public static ProfileFragment newInstance() {
+        return new ProfileFragment();
     }
 
     @Override
@@ -65,6 +39,161 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+
+        setupRefreshLayout();
+        setupListeners();
+        setupObservers();
+
+
+        loadData();
+    }
+
+    private void setupRefreshLayout() {
+        binding.swipeRefresh.setColorSchemeColors(
+                ContextCompat.getColor(requireContext(), R.color.primary)
+        );
+        binding.swipeRefresh.setOnRefreshListener(this::loadData);
+    }
+
+    private void loadData() {
+        viewModel.loadProfile();
+    }
+
+    private void setupListeners() {
+        binding.btnProfile.setOnClickListener(v -> showProfileDetailBottomSheet());
+
+        binding.imgEdit.setOnClickListener(v -> 
+            Toast.makeText(requireContext(), "Fitur ubah foto profil belum tersedia", Toast.LENGTH_SHORT).show()
+        );
+
+        binding.layoutLogout.setOnClickListener(v -> showLogoutConfirmationDialog());
+
+        binding.idLayoutBantuan.setOnClickListener(v -> 
+            Toast.makeText(requireContext(), "Pusat Bantuan belum tersedia", Toast.LENGTH_SHORT).show()
+        );
+
+        binding.layoutSyarat.setOnClickListener(v -> 
+            Toast.makeText(requireContext(), "Syarat dan Ketentuan belum tersedia", Toast.LENGTH_SHORT).show()
+        );
+
+        binding.layoutKebijakan.setOnClickListener(v -> 
+            Toast.makeText(requireContext(), "Kebijakan Privasi belum tersedia", Toast.LENGTH_SHORT).show()
+        );
+    }
+
+    private void setupObservers() {
+        viewModel.getProfileResult().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) return;
+
+            switch (resource.getStatus()) {
+                case LOADING:
+                    if (!binding.swipeRefresh.isRefreshing()) {
+                        binding.swipeRefresh.setRefreshing(true);
+                    }
+                    break;
+                case SUCCESS:
+                    binding.swipeRefresh.setRefreshing(false);
+                    if (resource.getData() != null && resource.getData().isSuccess() && resource.getData().getData() != null) {
+                        ProfileResponse.Data data = resource.getData().getData();
+                        currentProfile = resource.getData().getData();
+                        displayProfileData(currentProfile.getEmployee());
+                    } else {
+                        String msg = resource.getData() != null ? resource.getData().getMessage() : "Gagal memuat profil";
+                        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case ERROR:
+                    binding.swipeRefresh.setRefreshing(false);
+                    Toast.makeText(requireContext(), resource.getMessage() != null ? resource.getMessage() : "Koneksi bermasalah", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        });
+
+        viewModel.getLogoutResult().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) return;
+
+            switch (resource.getStatus()) {
+                case LOADING:
+                    binding.swipeRefresh.setRefreshing(true);
+                    break;
+                case SUCCESS:
+                    binding.swipeRefresh.setRefreshing(false);
+                    Toast.makeText(requireContext(), "Logout berhasil", Toast.LENGTH_SHORT).show();
+                    navigateToLoginActivity();
+                    break;
+                case ERROR:
+                    binding.swipeRefresh.setRefreshing(false);
+                    Toast.makeText(requireContext(), "Logout selesai (offline)", Toast.LENGTH_SHORT).show();
+                    viewModel.clearLocalSession();
+                    navigateToLoginActivity();
+                    break;
+            }
+        });
+    }
+
+    private void displayProfileData(ProfileResponse.Employee employee) {
+        binding.tvName.setText(employee.getName());
+        binding.tvRole.setText(employee.getRole());
+
+        ImageLoader.loadImage(employee.getAvatar(), binding.imgAvatar, R.drawable.ic_thumb_user);
+    }
+
+    private void showProfileDetailBottomSheet() {
+
+        if (currentProfile == null) {
+            Toast.makeText(requireContext(), "Data profil belum dimuat", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        BottomSheetDialog dialog =
+                new BottomSheetDialog(requireContext(), R.style.BottomSheetTheme);
+
+        DialogProfileDetailBinding binding =
+                DialogProfileDetailBinding.inflate(getLayoutInflater());
+
+        dialog.setContentView(binding.getRoot());
+
+        ProfileResponse.Employee employee = currentProfile.getEmployee();
+
+        binding.tvDetailNik.setText(value(employee.getNik()));
+        binding.tvDetailEmail.setText(value(currentProfile.getEmail()));
+        binding.tvDetailPhone.setText(value(employee.getPhone()));
+        binding.tvDetailCompany.setText(value(employee.getCompany()));
+        binding.tvDetailDivision.setText(value(employee.getDivision()));
+        binding.tvDetailWorkEntry.setText(value(employee.getWorkEntryDate()));
+
+        binding.btnDismiss.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+    private String value(String text) {
+        return text == null || text.isEmpty() ? "-" : text;
+    }
+
+    private void showLogoutConfirmationDialog() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Keluar Aplikasi")
+                .setMessage("Apakah Anda yakin ingin keluar dari aplikasi?")
+                .setPositiveButton("Ya", (dialog, which) -> viewModel.logout())
+                .setNegativeButton("Batal", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void navigateToLoginActivity() {
+        if (getActivity() != null) {
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            getActivity().finish();
+        }
     }
 
     @Override

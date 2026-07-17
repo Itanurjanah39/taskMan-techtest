@@ -1,8 +1,10 @@
 package com.technicaltest.taskman.data.repository;
 
 import com.technicaltest.taskman.data.auth.SessionManager;
+import com.technicaltest.taskman.data.model.GenericApiResponse;
 import com.technicaltest.taskman.data.model.LoginRequest;
 import com.technicaltest.taskman.data.model.LoginResponse;
+import com.technicaltest.taskman.data.model.ProfileResponse;
 import com.technicaltest.taskman.data.network.ApiClient;
 import com.technicaltest.taskman.data.network.ApiService;
 import com.technicaltest.taskman.utils.ApiCallback;
@@ -19,6 +21,7 @@ public class AuthRepository {
         this.sessionManager = sessionManager;
         this.apiService = ApiClient.getService(sessionManager);
     }
+
 
     public void login(String email, String password, ApiCallback<LoginResponse> callback) {
 
@@ -56,5 +59,13 @@ public class AuthRepository {
                     }
                 }
         );
+    }
+
+    public void getProfile(ApiCallback<ProfileResponse> callback) {
+        NetworkHelper.enqueueCall(apiService.getProfile(), callback);
+    }
+
+    public void logout(ApiCallback<GenericApiResponse> callback) {
+        NetworkHelper.enqueueCall(apiService.logout(), callback);
     }
 }

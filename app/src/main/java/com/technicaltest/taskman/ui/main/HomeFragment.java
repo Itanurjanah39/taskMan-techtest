@@ -11,21 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.technicaltest.taskman.R;
-import com.technicaltest.taskman.data.auth.SessionManager;
 import com.technicaltest.taskman.data.model.ProfileResponse;
 import com.technicaltest.taskman.data.model.TaskResponse;
-import com.technicaltest.taskman.data.network.ApiClient;
-import com.technicaltest.taskman.data.network.ApiService;
-import com.technicaltest.taskman.data.network.PublicApiClient;
-import com.technicaltest.taskman.data.network.PublicApiService;
+import com.technicaltest.taskman.data.viewmodel.HomeViewModel;
 import com.technicaltest.taskman.databinding.FragmentHomeBinding;
 import com.technicaltest.taskman.ui.adapter.TaskAdapter;
-import com.technicaltest.taskman.utils.ApiCallback;
-import com.technicaltest.taskman.utils.NetworkHelper;
-import com.technicaltest.taskman.utils.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +28,7 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private TaskAdapter taskAdapter;
-    private ApiService apiService;
-    private PublicApiService publicApiService;
-    private SessionManager sessionManager;
+    private HomeViewModel viewModel;
     private List<TaskResponse> allTasks = new ArrayList<>();
     private String currentFilter = "Semua";
 
@@ -59,13 +51,12 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        sessionManager = new SessionManager(requireContext());
-        apiService = ApiClient.getService(sessionManager);
-        publicApiService = PublicApiClient.getService(sessionManager);
+        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         setupRecyclerView();
         setupFilters();
         setupRefreshLayout();
+        setupObservers();
 
         // Initial data load
         loadData(true);
@@ -102,6 +93,43 @@ public class HomeFragment extends Fragment {
         binding.swipeRefresh.setColorSchemeColors(
                 ContextCompat.getColor(requireContext(), R.color.primary)
         );
+    }
+
+    private void setupObservers() {
+        viewModel.getProfileResult().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) return;
+            if (resource.isSuccess() && resource.getData() != null) {
+                ProfileResponse profile = resource.getData();
+                if (profile.isSuccess() && profile.getData() != null && profile.getData().getEmployee() != null) {
+                    String name = profile.getData().getEmployee().getName();
+                    binding.tvGreeting.setText("Hi, " + name + " 👋");
+                }
+            }
+        });
+
+        viewModel.getTasksResult().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) return;
+
+            switch (resource.getStatus()) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    binding.progressBar.setVisibility(View.GONE);
+                    binding.swipeRefresh.setRefreshing(false);
+                    if (resource.getData() != null) {
+                        allTasks = resource.getData();
+                        updateSummary();
+                        filterAndDisplayTasks();
+                    }
+                    break;
+                case ERROR:
+                    binding.progressBar.setVisibility(View.GONE);
+                    binding.swipeRefresh.setRefreshing(false);
+                    showError(resource.getMessage() != null ? resource.getMessage() : "Gagal mengambil task");
+                    showEmptyState();
+                    break;
+            }
+        });
     }
 
     private void handleFilterChange(String newFilter) {
@@ -156,50 +184,8 @@ public class HomeFragment extends Fragment {
             binding.layoutEmpty.setVisibility(View.GONE);
         }
 
-        loadProfile();
-        loadTasks();
-    }
-
-    private void loadProfile() {
-        NetworkHelper.enqueueCall(apiService.getProfile(), new ApiCallback<ProfileResponse>() {
-            @Override
-            public void onResponse(Resource<ProfileResponse> resource) {
-                if (!isAdded()) return;
-
-                if (resource.isSuccess() && resource.getData() != null) {
-                    ProfileResponse profile = resource.getData();
-                    if (profile.isSuccess() && profile.getData() != null && profile.getData().getEmployee() != null) {
-                        String name = profile.getData().getEmployee().getName();
-                        binding.tvGreeting.setText("Hi, " + name + " 👋");
-                    }
-                }
-            }
-        });
-    }
-
-    private void loadTasks() {
-        NetworkHelper.enqueueCall(publicApiService.getTasks(), new ApiCallback<List<TaskResponse>>() {
-            @Override
-            public void onResponse(Resource<List<TaskResponse>> resource) {
-                if (!isAdded()) return;
-
-                if (resource.isLoading()) {
-                    return;
-                }
-
-                binding.progressBar.setVisibility(View.GONE);
-                binding.swipeRefresh.setRefreshing(false);
-
-                if (resource.isSuccess() && resource.getData() != null) {
-                    allTasks = resource.getData();
-                    updateSummary();
-                    filterAndDisplayTasks();
-                } else if (resource.isError()) {
-                    showError(resource.getMessage() != null ? resource.getMessage() : "Gagal mengambil task");
-                    showEmptyState();
-                }
-            }
-        });
+        viewModel.loadProfile();
+        viewModel.loadTasks();
     }
 
     private void updateSummary() {

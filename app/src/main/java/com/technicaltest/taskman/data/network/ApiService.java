@@ -1,5 +1,6 @@
 package com.technicaltest.taskman.data.network;
 
+import com.technicaltest.taskman.data.model.GenericApiResponse;
 import com.technicaltest.taskman.data.model.LoginRequest;
 import com.technicaltest.taskman.data.model.LoginResponse;
 import com.technicaltest.taskman.data.model.ProfileResponse;
@@ -26,5 +27,8 @@ public interface ApiService {
     })
     @GET("api/auth/account")
     Call<ProfileResponse> getProfile();
+
+    @POST("api/auth/sign-out")
+    Call<GenericApiResponse> logout();
 
 }

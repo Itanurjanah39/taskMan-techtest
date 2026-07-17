@@ -6,6 +6,6 @@
         android:width="1dp"
         android:color="@color/primary"/>
 
-    <corners android:radius="@dimen/radius_button"/>
+    <corners android:radius="@dimen/space_20"/>
 
 </shape>

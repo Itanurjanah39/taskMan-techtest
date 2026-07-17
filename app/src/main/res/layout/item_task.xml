@@ -94,7 +94,7 @@
                         android:layout_marginStart="@dimen/space_8"
                         android:fontFamily="@font/poppins"
                         android:text="20 Mei 2024"
-                        style="@style/Text.Date" />
+                        style="@style/Text.Caption" />
 
                 </LinearLayout>
 

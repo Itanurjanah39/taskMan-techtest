@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_top_rounded">
+
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="#D1D5DB" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Detail Profil"
+        style="@style/Text.Title"
+        android:layout_marginBottom="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="10dp">
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="NIK"
+            style="@style/Text.Caption" />
+        <TextView
+            android:id="@+id/tvDetailNik"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="-"
+            style="@style/Text.Body"
+            android:textColor="@color/text_primary" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="10dp">
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            style="@style/Text.Caption"  />
+        <TextView
+            android:id="@+id/tvDetailEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="-"
+            style="@style/Text.Body"
+            android:textColor="@color/text_primary"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="10dp">
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="No. Telepon"
+            style="@style/Text.Caption" />
+        <TextView
+            android:id="@+id/tvDetailPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="-"
+            style="@style/Text.Body"
+            android:textColor="@color/text_primary"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="10dp">
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Perusahaan"
+            style="@style/Text.Caption"/>
+        <TextView
+            android:id="@+id/tvDetailCompany"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="-"
+            style="@style/Text.Body"
+            android:textColor="@color/text_primary" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="10dp">
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Divisi"
+            style="@style/Text.Caption"/>
+        <TextView
+            android:id="@+id/tvDetailDivision"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="-"
+            style="@style/Text.Body"
+            android:textColor="@color/text_primary"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="10dp">
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Tanggal Masuk"
+            style="@style/Text.Caption"/>
+        <TextView
+            android:id="@+id/tvDetailWorkEntry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="-"
+            style="@style/Text.Body"
+            android:textColor="@color/text_primary"/>
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnDismiss"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/bg_button_outline"
+        android:text="Tutup"
+        android:textAllCaps="false"
+        android:textColor="@color/primary"
+        android:textStyle="bold" />
+
+</LinearLayout>

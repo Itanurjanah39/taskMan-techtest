@@ -47,7 +47,6 @@
                             android:id="@+id/tv_greeting"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins"
                             android:text="Hi, ... 👋"
                             style="@style/Text.Title"
                             />
@@ -56,10 +55,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/space_4"
-                            android:fontFamily="@font/poppins"
                             android:text="Semangat menyelesaikan task hari ini!"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="13sp" />
+                           style="@style/Text.Caption" />
 
                     </LinearLayout>
 
@@ -95,7 +92,6 @@
                     android:layout_marginEnd="@dimen/space_8"
                     android:background="@drawable/bg_chip_active"
                     android:gravity="center"
-                    android:fontFamily="@font/poppins"
                     android:text="Semua"
                     android:textColor="@color/white"
                     android:textStyle="bold"
@@ -111,7 +107,6 @@
                     android:layout_marginEnd="@dimen/space_8"
                     android:background="@drawable/bg_chip_inactive"
                     android:gravity="center"
-                    android:fontFamily="@font/poppins"
                     android:text="Pending"
                     android:textColor="@color/text_primary"
                     android:clickable="true"
@@ -125,7 +120,6 @@
                     android:layout_weight="1"
                     android:background="@drawable/bg_chip_inactive"
                     android:gravity="center"
-                    android:fontFamily="@font/poppins"
                     android:text="Done"
                     android:textColor="@color/text_primary"
                     android:clickable="true"
@@ -139,11 +133,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/space_16"
                 android:layout_marginTop="@dimen/space_20"
-                android:fontFamily="@font/poppins"
                 android:text="Ringkasan"
                 android:textColor="@color/text_primary"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                style="@style/Text.Title" />
 
             <!-- Summary Cards Row -->
             <LinearLayout
@@ -189,7 +181,6 @@
                                 android:id="@+id/tv_total_task_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins"
                                 android:text="0"
                                 android:textColor="@color/text_primary"
                                 android:textSize="20sp"
@@ -198,10 +189,8 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins"
                                 android:text="Total Task"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="12sp" />
+                                style="@style/Text.Caption" />
 
                         </LinearLayout>
 
@@ -244,7 +233,6 @@
                                 android:id="@+id/tv_completed_task_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins"
                                 android:text="0"
                                 android:textColor="@color/text_primary"
                                 android:textSize="20sp"
@@ -253,10 +241,8 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppins"
                                 android:text="Selesai"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="12sp" />
+                                style="@style/Text.Caption" />
 
                         </LinearLayout>
 
@@ -278,11 +264,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:fontFamily="@font/poppins"
                     android:text="Daftar Task"
-                    android:textColor="@color/text_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                   style="@style/Text.Title"/>
 
                 <ImageView
                     android:id="@+id/btn_refresh"
@@ -325,10 +308,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/space_16"
-                    android:fontFamily="@font/poppins"
                     android:text="Tidak ada task saat ini"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp" />
+                    style="@style/Text.Body"/>
 
             </LinearLayout>
 
