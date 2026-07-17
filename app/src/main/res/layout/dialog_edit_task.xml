@@ -1,212 +1,495 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:background="@drawable/bg_top_rounded">
+    android:fillViewport="true">
 
-    <!-- Drag Handle -->
-    <View
-        android:layout_width="40dp"
-        android:layout_height="4dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
-        android:background="#D1D5DB" />
-
-    <!-- Title -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Edit Tugas"
-        style="@style/Text.Title"
-        android:layout_marginBottom="16dp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/border"
-        android:layout_marginBottom="16dp" />
-
-    <!-- Task Title Input -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="Judul Tugas"
-        style="@style/Text.Input"
-        android:textColor="@color/text_primary"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/et_task_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/bg_edittext"
-        android:hint="Masukkan judul tugas"
-        android:inputType="text"
-        android:textColorHint="@color/text_hint"
-        style="@style/Text.Input" />
-
-    <!-- Task Description Input -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="Deskripsi Tugas"
-        style="@style/Text.Input"
-        android:textColor="@color/text_primary"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/et_task_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/bg_edittext"
-        android:hint="Masukkan deskripsi tugas"
-        android:inputType="textMultiLine"
-        android:minLines="2"
-        android:gravity="top|start"
-        android:textColorHint="@color/text_hint"
-        style="@style/Text.Input" />
-
-    <!-- Horizontal layout for Status and Type -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
+        android:orientation="vertical"
+        android:padding="@dimen/space_24"
+        android:background="@drawable/bg_top_rounded">
 
-        <!-- Status Dropdown (Spinner) -->
-        <LinearLayout
-            android:layout_width="0dp"
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:orientation="vertical">
+            app:cardBackgroundColor="@color/background_secondary"
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/space_16">
 
-            <TextView
+            <LinearLayout
+                android:padding="@dimen/space_16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/background_secondary"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="16dp">
+
+                    <TextView
+                        android:id="@+id/tv_dialog_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Buat task baru"
+                        style="@style/Text.Title" />
+
+                    <TextView
+                        android:id="@+id/tv_dialog_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Isi detail task dengan lengkap agar lebih terorganisir"
+                        style="@style/Text.Caption" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/iv_dialog_illustration"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/bg_task" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="20dp">
+
+            <!-- Title Input -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="Status"
-                style="@style/Text.Input"
-                android:textColor="@color/text_primary"
-                android:textStyle="bold" />
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Judul Task"
+                    style="@style/Text.Body" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" *"
+                    android:textColor="@color/error"
+                    style="@style/Text.Input" />
+            </LinearLayout>
 
-            <Spinner
-                android:id="@+id/spinner_task_status"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginTop="4dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_edittext"
-                android:paddingHorizontal="4dp"/>
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp">
 
-        <!-- Type Dropdown (Spinner) -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:orientation="vertical">
+                <EditText
+                    android:id="@+id/et_task_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="Masukkan judul task"
+                    android:inputType="text"
+                    android:textColorHint="@color/text_hint"
+                    style="@style/Text.Input" />
 
-            <TextView
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_document"
+                    app:tint="@color/icon_default" />
+            </LinearLayout>
+
+            <!-- Description Input -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="Tipe"
-                style="@style/Text.Input"
-                android:textColor="@color/text_primary"
-                android:textStyle="bold" />
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Deskripsi"
+                    style="@style/Text.Body" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" *"
+                    android:textColor="@color/error"
+                    style="@style/Text.Input" />
+            </LinearLayout>
 
-            <Spinner
-                android:id="@+id/spinner_task_type"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginTop="4dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
                 android:background="@drawable/bg_edittext"
-                android:paddingHorizontal="4dp" />
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp">
+
+                <EditText
+                    android:id="@+id/et_task_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minLines="3"
+                    android:maxLength="300"
+                    android:background="@android:color/transparent"
+                    android:hint="Masukkan deskripsi task"
+                    android:gravity="top|start"
+                    android:inputType="textMultiLine"
+                    android:textColorHint="@color/text_hint"
+                    style="@style/Text.Input" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_char_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp"
+                android:text="0/300"
+                style="@style/Text.Caption"
+                android:textColor="@color/text_secondary" />
+
+            <!-- Jenis Task Selection -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Jenis Task"
+                    style="@style/Text.Body" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" *"
+                    android:textColor="@color/error"
+                    style="@style/Text.Input"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal">
+
+                <!-- Harian Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btn_type_harian"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/border"
+                    app:cardBackgroundColor="@color/white"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/iv_type_harian"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_calendar"
+                            app:tint="@color/primary" />
+
+                        <TextView
+                            android:id="@+id/tv_type_harian_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Harian"
+                            style="@style/Text.Body"/>
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Mingguan Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btn_type_mingguan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="4dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/border"
+                    app:cardBackgroundColor="@color/white"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/iv_type_mingguan"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_calendar"
+                            app:tint="@color/primary" />
+
+                        <TextView
+                            android:id="@+id/tv_type_mingguan_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Mingguan"
+                            style="@style/Text.Body"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Bulanan Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btn_type_bulanan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/border"
+                    app:cardBackgroundColor="@color/white"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/iv_type_bulanan"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_calendar"
+                            app:tint="@color/primary" />
+
+                        <TextView
+                            android:id="@+id/tv_type_bulanan_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Bulanan"
+                            style="@style/Text.Body"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <!-- Deadline Input -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Deadline"
+                    style="@style/Text.Body"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" *"
+                    android:textColor="@color/error"
+                    style="@style/Text.Input" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_deadline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_edittext"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_calendar"
+                    app:tint="@color/icon_default"
+                    android:layout_marginEnd="12dp" />
+
+                <EditText
+                    android:id="@+id/et_task_deadline"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="Pilih tanggal deadline"
+                    android:textColorHint="@color/text_hint"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    style="@style/Text.Input" />
+
+                <ImageView
+                    android:id="@+id/btn_clear_deadline"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_clear"
+                    app:tint="@color/icon_default"
+                    android:visibility="gone"
+                    android:clickable="true"
+                    android:focusable="true" />
+            </LinearLayout>
+
+            <!-- Status Selection -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Status"
+                    style="@style/Text.Body" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" *"
+                    android:textColor="@color/error"
+                    style="@style/Text.Input" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="28dp"
+                android:orientation="horizontal">
+
+                <!-- Pending Status Button -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btn_status_pending"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/border"
+                    app:cardBackgroundColor="@color/white"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/iv_status_pending"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_clock"
+                            app:tint="@color/primary"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tv_status_pending"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pending"
+                            style="@style/Text.Body"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Done Status Button -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btn_status_done"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/border"
+                    app:cardBackgroundColor="@color/white"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/iv_status_done"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_check"
+                            app:tint="@color/primary"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tv_status_done"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Done"
+                            style="@style/Text.Body" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_save_task"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:background="@drawable/bg_button_primary"
+                android:text="Simpan"
+                style="@style/Text.Button"
+                android:textAllCaps="false" />
+
         </LinearLayout>
 
     </LinearLayout>
 
-    <!-- Deadline Input (Date Picker Clickable) -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="Batas Waktu (Deadline)"
-        style="@style/Text.Input"
-        android:textColor="@color/text_primary"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:id="@+id/layout_deadline"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/bg_edittext"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:clickable="true"
-        android:focusable="true">
-
-        <EditText
-            android:id="@+id/et_task_deadline"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:hint="Pilih tanggal deadline"
-            android:textColorHint="@color/text_hint"
-            android:clickable="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            style="@style/Text.Input" />
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_calendar"
-            app:tint="@color/primary" />
-    </LinearLayout>
-
-    <!-- Buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_cancel"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/button_height"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_button_outline"
-            android:text="Batal"
-            android:textAllCaps="false"
-            android:textColor="@color/primary"
-            android:textStyle="bold" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_save"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/button_height"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/bg_button_primary"
-            android:text="Simpan"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.core.widget.NestedScrollView>

@@ -19,6 +19,7 @@ public class TaskViewModel extends AndroidViewModel {
 
     private final TaskRepository taskRepository;
     private final MutableLiveData<Resource<List<TaskResponse>>> tasksResult = new MutableLiveData<>();
+    private final MutableLiveData<Resource<TaskResponse>> createResult = new MutableLiveData<>();
     private final MutableLiveData<Resource<TaskResponse>> updateResult = new MutableLiveData<>();
     private final MutableLiveData<Resource<GenericApiResponse>> deleteResult = new MutableLiveData<>();
 
@@ -30,6 +31,10 @@ public class TaskViewModel extends AndroidViewModel {
 
     public LiveData<Resource<List<TaskResponse>>> getTasksResult() {
         return tasksResult;
+    }
+
+    public LiveData<Resource<TaskResponse>> getCreateResult() {
+        return createResult;
     }
 
     public LiveData<Resource<TaskResponse>> getUpdateResult() {
@@ -44,12 +49,20 @@ public class TaskViewModel extends AndroidViewModel {
         taskRepository.getTasks(resource -> tasksResult.setValue(resource));
     }
 
+    public void createTask(TaskRequest request) {
+        taskRepository.createTask(request, resource -> createResult.setValue(resource));
+    }
+
     public void updateTask(String id, TaskRequest request) {
         taskRepository.updateTask(id, request, resource -> updateResult.setValue(resource));
     }
 
     public void deleteTask(String id) {
         taskRepository.deleteTask(id, resource -> deleteResult.setValue(resource));
+    }
+
+    public void resetCreateResult() {
+        createResult.setValue(null);
     }
 
     public void resetUpdateResult() {

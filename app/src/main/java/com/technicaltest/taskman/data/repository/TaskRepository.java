@@ -23,6 +23,10 @@ public class TaskRepository {
         NetworkHelper.enqueueCall(publicApiService.getTasks(), callback);
     }
 
+    public void createTask(TaskRequest request, ApiCallback<TaskResponse> callback) {
+        NetworkHelper.enqueueCall(publicApiService.createTask(request), callback);
+    }
+
     public void updateTask(String id, TaskRequest request, ApiCallback<TaskResponse> callback) {
         NetworkHelper.enqueueCall(publicApiService.updateTask(id, request), callback);
     }

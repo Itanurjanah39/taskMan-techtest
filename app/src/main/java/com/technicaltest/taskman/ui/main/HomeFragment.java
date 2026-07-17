@@ -44,6 +44,61 @@ public class HomeFragment extends Fragment {
     private List<TaskResponse> allTasks = new ArrayList<>();
     private String currentFilter = "Semua";
 
+    private boolean isProfileLoaded = false;
+    private boolean isTasksLoaded = false;
+    private boolean isMinTimeElapsed = false;
+    private com.technicaltest.taskman.data.network.Resource<ProfileResponse> pendingProfileResource = null;
+    private com.technicaltest.taskman.data.network.Resource<List<TaskResponse>> pendingTasksResource = null;
+
+    private void checkAndDisplayData() {
+        if (!isAdded()) return;
+        if (isProfileLoaded && isTasksLoaded && isMinTimeElapsed) {
+            // Process Profile
+            if (pendingProfileResource != null && pendingProfileResource.isSuccess() && pendingProfileResource.getData() != null) {
+                ProfileResponse profile = pendingProfileResource.getData();
+                if (profile.isSuccess() && profile.getData() != null && profile.getData().getEmployee() != null) {
+                    String name = profile.getData().getEmployee().getName();
+                    binding.tvGreeting.setText("Hi, " + name + " 👋");
+                }
+            }
+
+            // Process Tasks
+            if (pendingTasksResource != null) {
+                binding.progressBar.setVisibility(View.GONE);
+                binding.swipeRefresh.setRefreshing(false);
+
+                switch (pendingTasksResource.getStatus()) {
+                    case SUCCESS:
+                        if (pendingTasksResource.getData() != null) {
+                            allTasks = pendingTasksResource.getData();
+                            // Sort by createdAt descending (newest first)
+                            java.util.Collections.sort(allTasks, (o1, o2) -> {
+                                String c1 = o1.getCreatedAt();
+                                String c2 = o2.getCreatedAt();
+                                if (c1 == null && c2 == null) return 0;
+                                if (c1 == null) return 1;
+                                if (c2 == null) return -1;
+                                return c2.compareTo(c1);
+                            });
+                            updateSummary();
+                            filterAndDisplayTasks();
+                        }
+                        break;
+                    case ERROR:
+                        binding.rvTasks.setVisibility(View.GONE);
+                        EmptyStateUtils.showEmptyState(
+                                binding.layoutEmpty,
+                                "Gagal mengambil data. Ketuk untuk memuat ulang.",
+                                R.drawable.img_question,
+                                () -> loadData(true)
+                        );
+                        taskAdapter.setTasks(new ArrayList<>());
+                        break;
+                }
+            }
+        }
+    }
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -78,7 +133,7 @@ public class HomeFragment extends Fragment {
         taskAdapter = new TaskAdapter(new TaskAdapter.OnTaskClickListener() {
             @Override
             public void onEditClick(TaskResponse task) {
-                showEditTaskBottomSheet(task);
+                showTaskBottomSheet(task);
             }
 
             @Override
@@ -109,42 +164,17 @@ public class HomeFragment extends Fragment {
     private void setupObservers() {
         viewModel.getProfileResult().observe(getViewLifecycleOwner(), resource -> {
             if (resource == null) return;
-            if (resource.isSuccess() && resource.getData() != null) {
-                ProfileResponse profile = resource.getData();
-                if (profile.isSuccess() && profile.getData() != null && profile.getData().getEmployee() != null) {
-                    String name = profile.getData().getEmployee().getName();
-                    binding.tvGreeting.setText("Hi, " + name + " 👋");
-                }
-            }
+            pendingProfileResource = resource;
+            isProfileLoaded = true;
+            checkAndDisplayData();
         });
 
         viewModel.getTasksResult().observe(getViewLifecycleOwner(), resource -> {
             if (resource == null) return;
-
-            switch (resource.getStatus()) {
-                case LOADING:
-                    break;
-                case SUCCESS:
-                    binding.progressBar.setVisibility(View.GONE);
-                    binding.swipeRefresh.setRefreshing(false);
-                    if (resource.getData() != null) {
-                        allTasks = resource.getData();
-                        updateSummary();
-                        filterAndDisplayTasks();
-                    }
-                    break;
-                case ERROR:
-                    binding.progressBar.setVisibility(View.GONE);
-                    binding.swipeRefresh.setRefreshing(false);
-                    binding.rvTasks.setVisibility(View.GONE);
-                    EmptyStateUtils.showEmptyState(
-                            binding.layoutEmpty,
-                            "Gagal mengambil data.Swipe Refresh halaman untuk memuat ulang.",
-                            R.drawable.img_question,
-                            () -> loadData(true)
-                    );
-                    taskAdapter.setTasks(new ArrayList<>());
-                    break;
+            if (resource.getStatus() != com.technicaltest.taskman.data.network.Resource.Status.LOADING) {
+                pendingTasksResource = resource;
+                isTasksLoaded = true;
+                checkAndDisplayData();
             }
         });
 
@@ -236,7 +266,24 @@ public class HomeFragment extends Fragment {
         if (showProgressBar) {
             binding.progressBar.setVisibility(View.VISIBLE);
             binding.rvTasks.setVisibility(View.GONE);
-            binding.layoutEmpty.setVisibility(View.GONE);
+            EmptyStateUtils.hideEmptyState(binding.layoutEmpty);
+
+            isProfileLoaded = false;
+            isTasksLoaded = false;
+            isMinTimeElapsed = false;
+            pendingProfileResource = null;
+            pendingTasksResource = null;
+
+            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                isMinTimeElapsed = true;
+                checkAndDisplayData();
+            }, 3000);
+        } else {
+            isProfileLoaded = false;
+            isTasksLoaded = false;
+            isMinTimeElapsed = true;
+            pendingProfileResource = null;
+            pendingTasksResource = null;
         }
 
         viewModel.loadProfile();
@@ -298,45 +345,169 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void showEditTaskBottomSheet(TaskResponse task) {
+    private String selectedType = "Harian";
+    private String selectedStatus = "Pending";
+
+    private void updateTypeSelection(DialogEditTaskBinding dialogBinding, String type) {
+        selectedType = type;
+        int activeColor = ContextCompat.getColor(requireContext(), R.color.primary);
+        int inactiveColor = ContextCompat.getColor(requireContext(), R.color.white);
+        int activeTextColor = ContextCompat.getColor(requireContext(), R.color.white);
+        int inactiveTextColor = ContextCompat.getColor(requireContext(), R.color.text_primary);
+        int inactiveSubColor = ContextCompat.getColor(requireContext(), R.color.text_secondary);
+        int inactiveBorderColor = ContextCompat.getColor(requireContext(), R.color.border);
+
+        // Reset all cards
+        dialogBinding.btnTypeHarian.setCardBackgroundColor(inactiveColor);
+        dialogBinding.btnTypeHarian.setStrokeColor(inactiveBorderColor);
+        dialogBinding.ivTypeHarian.setColorFilter(activeColor);
+        dialogBinding.tvTypeHarianTitle.setTextColor(inactiveTextColor);
+
+        dialogBinding.btnTypeMingguan.setCardBackgroundColor(inactiveColor);
+        dialogBinding.btnTypeMingguan.setStrokeColor(inactiveBorderColor);
+        dialogBinding.ivTypeMingguan.setColorFilter(activeColor);
+        dialogBinding.tvTypeMingguanTitle.setTextColor(inactiveTextColor);
+
+        dialogBinding.btnTypeBulanan.setCardBackgroundColor(inactiveColor);
+        dialogBinding.btnTypeBulanan.setStrokeColor(inactiveBorderColor);
+        dialogBinding.ivTypeBulanan.setColorFilter(activeColor);
+        dialogBinding.tvTypeBulananTitle.setTextColor(inactiveTextColor);
+
+        // Set active
+        if (type.equalsIgnoreCase("Harian")) {
+            dialogBinding.btnTypeHarian.setCardBackgroundColor(activeColor);
+            dialogBinding.btnTypeHarian.setStrokeColor(activeColor);
+            dialogBinding.ivTypeHarian.setColorFilter(activeTextColor);
+            dialogBinding.tvTypeHarianTitle.setTextColor(activeTextColor);
+
+        } else if (type.equalsIgnoreCase("Mingguan")) {
+            dialogBinding.btnTypeMingguan.setCardBackgroundColor(activeColor);
+            dialogBinding.btnTypeMingguan.setStrokeColor(activeColor);
+            dialogBinding.ivTypeMingguan.setColorFilter(activeTextColor);
+            dialogBinding.tvTypeMingguanTitle.setTextColor(activeTextColor);
+
+        } else if (type.equalsIgnoreCase("Bulanan")) {
+            dialogBinding.btnTypeBulanan.setCardBackgroundColor(activeColor);
+            dialogBinding.btnTypeBulanan.setStrokeColor(activeColor);
+            dialogBinding.ivTypeBulanan.setColorFilter(activeTextColor);
+            dialogBinding.tvTypeBulananTitle.setTextColor(activeTextColor);
+
+        }
+    }
+
+    private void updateStatusSelection(DialogEditTaskBinding dialogBinding, String status) {
+        selectedStatus = status;
+        int activeColor = ContextCompat.getColor(requireContext(), R.color.primary);
+        int inactiveColor = ContextCompat.getColor(requireContext(), R.color.white);
+        int activeTextColor = ContextCompat.getColor(requireContext(), R.color.white);
+        int inactiveTextColor = ContextCompat.getColor(requireContext(), R.color.text_primary);
+        int inactiveBorderColor = ContextCompat.getColor(requireContext(), R.color.border);
+
+        // Reset
+        dialogBinding.btnStatusPending.setCardBackgroundColor(inactiveColor);
+        dialogBinding.btnStatusPending.setStrokeColor(inactiveBorderColor);
+        dialogBinding.ivStatusPending.setColorFilter(activeColor);
+        dialogBinding.tvStatusPending.setTextColor(inactiveTextColor);
+
+        dialogBinding.btnStatusDone.setCardBackgroundColor(inactiveColor);
+        dialogBinding.btnStatusDone.setStrokeColor(inactiveBorderColor);
+        dialogBinding.ivStatusDone.setColorFilter(activeColor);
+        dialogBinding.tvStatusDone.setTextColor(inactiveTextColor);
+
+        // Set active
+        if (status.equalsIgnoreCase("Done") || status.equalsIgnoreCase("Selesai")) {
+            dialogBinding.btnStatusDone.setCardBackgroundColor(activeColor);
+            dialogBinding.btnStatusDone.setStrokeColor(activeColor);
+            dialogBinding.ivStatusDone.setColorFilter(activeTextColor);
+            dialogBinding.tvStatusDone.setTextColor(activeTextColor);
+        } else {
+            dialogBinding.btnStatusPending.setCardBackgroundColor(activeColor);
+            dialogBinding.btnStatusPending.setStrokeColor(activeColor);
+            dialogBinding.ivStatusPending.setColorFilter(activeTextColor);
+            dialogBinding.tvStatusPending.setTextColor(activeTextColor);
+        }
+    }
+
+    private void showTaskBottomSheet(TaskResponse task) {
         BottomSheetDialog dialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetTheme);
         DialogEditTaskBinding dialogBinding = DialogEditTaskBinding.inflate(getLayoutInflater());
         dialog.setContentView(dialogBinding.getRoot());
 
-        dialogBinding.etTaskTitle.setText(task.getTitle());
-        dialogBinding.etTaskDescription.setText(task.getDescription());
-        dialogBinding.etTaskDeadline.setText(task.getDeadline());
+        // Default state
+        selectedType = "Harian";
+        selectedStatus = "Pending";
 
-        // Setup Spinners
-        String[] statusOptions = {"Pending", "Done"};
-        ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, statusOptions);
-        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dialogBinding.spinnerTaskStatus.setAdapter(statusAdapter);
+        if (task == null) {
+            dialogBinding.tvDialogTitle.setText("Buat task baru");
+            dialogBinding.tvDialogSubtitle.setText("Isi detail task dengan lengkap agar lebih terorganisir");
+            dialogBinding.btnSaveTask.setText("SIMPAN TASK");
 
-        if (task.getStatus() != null) {
-            String status = task.getStatus().trim();
-            if (status.equalsIgnoreCase("Done") || status.equalsIgnoreCase("Selesai")) {
-                dialogBinding.spinnerTaskStatus.setSelection(1);
-            } else {
-                dialogBinding.spinnerTaskStatus.setSelection(0);
+            dialogBinding.etTaskTitle.setText("");
+            dialogBinding.etTaskDescription.setText("");
+            dialogBinding.etTaskDeadline.setText("");
+        } else {
+            dialogBinding.tvDialogTitle.setText("Edit task");
+            dialogBinding.tvDialogSubtitle.setText("Perbarui detail task sesuai kebutuhan");
+            dialogBinding.btnSaveTask.setText("UPDATE TASK");
+
+            dialogBinding.etTaskTitle.setText(task.getTitle());
+            dialogBinding.etTaskDescription.setText(task.getDescription());
+            dialogBinding.etTaskDeadline.setText(task.getDeadline());
+
+            if (task.getType() != null) {
+                selectedType = task.getType().trim();
+            }
+            if (task.getStatus() != null) {
+                selectedStatus = task.getStatus().trim();
             }
         }
 
-        String[] typeOptions = {"Harian", "Mingguan", "Bulanan"};
-        ArrayList<String> typeList = new ArrayList<>(java.util.Arrays.asList(typeOptions));
-        if (task.getType() != null) {
-            String type = task.getType().trim();
-            if (!typeList.contains(type)) {
-                typeList.add(type);
-            }
-        }
-        ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, typeList);
-        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dialogBinding.spinnerTaskType.setAdapter(typeAdapter);
+        // Initialize selections
+        updateTypeSelection(dialogBinding, selectedType);
+        updateStatusSelection(dialogBinding, selectedStatus);
 
-        if (task.getType() != null) {
-            dialogBinding.spinnerTaskType.setSelection(typeList.indexOf(task.getType().trim()));
-        }
+        // Click listeners for type cards
+        dialogBinding.btnTypeHarian.setOnClickListener(v -> updateTypeSelection(dialogBinding, "Harian"));
+        dialogBinding.btnTypeMingguan.setOnClickListener(v -> updateTypeSelection(dialogBinding, "Mingguan"));
+        dialogBinding.btnTypeBulanan.setOnClickListener(v -> updateTypeSelection(dialogBinding, "Bulanan"));
+
+        // Click listeners for status cards
+        dialogBinding.btnStatusPending.setOnClickListener(v -> updateStatusSelection(dialogBinding, "Pending"));
+        dialogBinding.btnStatusDone.setOnClickListener(v -> updateStatusSelection(dialogBinding, "Done"));
+
+        // Description char counter
+        dialogBinding.tvCharCount.setText(dialogBinding.etTaskDescription.getText().length() + "/300");
+        dialogBinding.etTaskDescription.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                dialogBinding.tvCharCount.setText(s.length() + "/300");
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+
+        // Deadline input clear button visibility
+        dialogBinding.etTaskDeadline.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    dialogBinding.btnClearDeadline.setVisibility(View.VISIBLE);
+                } else {
+                    dialogBinding.btnClearDeadline.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+        dialogBinding.btnClearDeadline.setOnClickListener(v -> dialogBinding.etTaskDeadline.setText(""));
 
         // Date Picker
         dialogBinding.layoutDeadline.setOnClickListener(v -> {
@@ -379,13 +550,10 @@ public class HomeFragment extends Fragment {
             datePickerDialog.show();
         });
 
-        dialogBinding.btnCancel.setOnClickListener(v -> dialog.dismiss());
-
-        dialogBinding.btnSave.setOnClickListener(v -> {
+        // Save action
+        dialogBinding.btnSaveTask.setOnClickListener(v -> {
             String title = dialogBinding.etTaskTitle.getText().toString().trim();
             String description = dialogBinding.etTaskDescription.getText().toString().trim();
-            String status = dialogBinding.spinnerTaskStatus.getSelectedItem().toString();
-            String type = dialogBinding.spinnerTaskType.getSelectedItem().toString();
             String deadline = dialogBinding.etTaskDeadline.getText().toString().trim();
 
             if (title.isEmpty()) {
@@ -393,8 +561,10 @@ public class HomeFragment extends Fragment {
                 return;
             }
 
-            TaskRequest request = new TaskRequest(title, description, status, type, deadline);
-            viewModel.updateTask(task.getId(), request);
+            TaskRequest request = new TaskRequest(title, description, selectedStatus, selectedType, deadline);
+            if (task != null) {
+                viewModel.updateTask(task.getId(), request);
+            }
             dialog.dismiss();
         });
 

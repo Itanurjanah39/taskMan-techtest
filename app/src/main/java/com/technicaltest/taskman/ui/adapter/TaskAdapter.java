@@ -79,6 +79,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 binding.tvStatus.setBackgroundResource(R.drawable.bg_done);
                 binding.tvStatus.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.done_text));
                 binding.statusStrip.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.success));
+
             } else {
                 binding.tvStatus.setText("Pending");
                 binding.tvStatus.setBackgroundResource(R.drawable.bg_pending);
