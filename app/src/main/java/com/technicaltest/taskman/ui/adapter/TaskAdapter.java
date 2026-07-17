@@ -22,6 +22,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public interface OnTaskClickListener {
         void onEditClick(TaskResponse task);
         void onDeleteClick(TaskResponse task);
+        void onItemClick(TaskResponse task);
     }
 
     public TaskAdapter(OnTaskClickListener listener) {
@@ -97,6 +98,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             binding.btnDelete.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onDeleteClick(task);
+                }
+            });
+
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemClick(task);
                 }
             });
         }

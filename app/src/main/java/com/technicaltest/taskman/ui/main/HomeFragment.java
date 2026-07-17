@@ -1,5 +1,6 @@
 package com.technicaltest.taskman.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,8 @@ import com.technicaltest.taskman.databinding.FragmentHomeBinding;
 import com.technicaltest.taskman.ui.adapter.TaskAdapter;
 import com.technicaltest.taskman.utils.DialogUtils;
 import com.technicaltest.taskman.utils.EmptyStateUtils;
+import com.technicaltest.taskman.MainActivity;
+import com.technicaltest.taskman.ui.task.TaskDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,6 +138,13 @@ public class HomeFragment extends Fragment {
             public void onDeleteClick(TaskResponse task) {
                 showDeleteConfirmationDialog(task);
             }
+
+            @Override
+            public void onItemClick(TaskResponse task) {
+                Intent intent = new Intent(requireContext(), TaskDetailActivity.class);
+                intent.putExtra("TASK_ID", task.getId());
+                startActivity(intent);
+            }
         });
 
         binding.rvTasks.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -191,14 +201,17 @@ public class HomeFragment extends Fragment {
             if (resource == null) return;
             switch (resource.getStatus()) {
                 case LOADING:
+                    binding.progressBar.setVisibility(View.VISIBLE);
                     break;
                 case SUCCESS:
+                    binding.progressBar.setVisibility(View.GONE);
                     DialogUtils.showSuccessDialog(requireContext(), "Berhasil", "Tugas berhasil dihapus", () -> {
                         viewModel.resetDeleteResult();
                         loadData(false);
                     });
                     break;
                 case ERROR:
+                    binding.progressBar.setVisibility(View.GONE);
                     DialogUtils.showErrorDialog(requireContext(), "Gagal", "Gagal menghapus tugas: " + resource.getMessage(), () -> {
                         viewModel.resetDeleteResult();
                     });
@@ -309,7 +322,15 @@ public class HomeFragment extends Fragment {
                 "Hapus Tugas",
                 "Apakah Anda yakin ingin menghapus tugas \"" + task.getTitle() + "\"?",
                 R.drawable.img_question,
-                () -> viewModel.deleteTask(task.getId())
+                () -> {
+                    binding.rvTasks.setVisibility(View.GONE);
+                    EmptyStateUtils.hideEmptyState(binding.layoutEmpty.getRoot());
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    binding.showAll.setVisibility(View.GONE);
+                    new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                        viewModel.deleteTask(task.getId());
+                    }, 2000);
+                }
         );
     }
 

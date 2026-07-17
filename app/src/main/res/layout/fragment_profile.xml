@@ -13,174 +13,218 @@
         <ImageView
             android:id="@+id/imgHeader"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/bg_profile" />
-
-        <RelativeLayout
-            android:id="@+id/layoutProfile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="75dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginEnd="1dp"
-            android:padding="16dp">
-
-            <!-- AVATAR -->
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgAvatar"
-                android:layout_width="92dp"
-                android:layout_height="92dp"
-                android:src="@drawable/ic_thumb_user"
-                app:civ_border_color="@color/white"
-                app:civ_border_width="2dp"
-                app:civ_circle_background_color="@color/background" />
-
-
-
-            <TextView
-                android:id="@+id/tvName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_toEndOf="@id/imgAvatar"
-                android:text="........"
-                style="@style/Text.Button" />
-
-
-            <TextView
-                android:id="@+id/tvRole"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvName"
-                android:layout_toEndOf="@id/imgAvatar"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="@dimen/space_12"
-                android:text="-"
-                style="@style/Text.Subtitle"/>
-
-        </RelativeLayout>
-
+            android:src="@drawable/bg_profil" />
 
         <LinearLayout
-            android:id="@+id/layoutMenu"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/layoutProfile"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="@dimen/space_20">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnProfile"
+            <com.google.android.material.card.MaterialCardView
+                android:layout_marginTop="54dp"
+                android:layout_marginHorizontal="@dimen/space_16"
+                android:id="@+id/layoutProfile"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/button_height"
-                android:background="@drawable/bg_button_outline"
-                android:textAllCaps="false"
-                android:textColor="@color/primary"
-                android:layout_marginHorizontal="22dp"
-                android:text="Lihat Profil"
-                android:layout_marginVertical="3dp"/>
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/space_16"
+                app:cardElevation="@dimen/space_4">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/space_12"
-                android:layout_height="1dp"
-                android:background="@color/border"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Pengaturan &amp; Kebijakan"
-                android:layout_marginTop="22dp"
-                android:textStyle="bold">
-            </TextView>
-
-            <RelativeLayout
-                android:id="@+id/layoutSyarat"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:paddingVertical="12dp">
-
-                <ImageView
-                    android:id="@+id/icTerms"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_syarat"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:padding="@dimen/space_16"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/icTerms"
-                    android:layout_marginStart="12dp"
-                    android:text="Syarat dan Ketentuan"
-                    android:textSize="14sp"
-                    android:textColor="#212121"/>
+                    android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_arrow_right"/>
-            </RelativeLayout>
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgAvatar"
+                        android:layout_width="84dp"
+                        android:layout_height="84dp"
+                        android:src="@drawable/ic_thumb_user"
+                        app:civ_border_color="@color/white"
+                        app:civ_border_width="2dp"
+                        app:civ_circle_background_color="@color/background" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/space_8"
+                        android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/layoutKebijakan"
+                        <TextView
+                            android:layout_marginTop="@dimen/space_12"
+                            android:id="@+id/tvName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="........"
+                            style="@style/Text.Body"
+                            android:textColor="@color/text_primary"/>
+
+                        <TextView
+                            android:id="@+id/tvRole"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-"
+                            style="@style/Text.Caption"/>
+                        <TextView
+                            android:id="@+id/tvDivision"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-"
+                            style="@style/Text.Caption"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_marginTop="@dimen/space_24"
+                android:layout_marginHorizontal="@dimen/space_16"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:paddingVertical="12dp">
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/space_16"
+                app:cardElevation="@dimen/space_4">
 
-                <ImageView
-                    android:id="@+id/icPrivacy"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_privasi"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/icPrivacy"
-                    android:layout_marginStart="12dp"
-                    android:text="Kebijakan Privasi"
-                    android:textSize="14sp"
-                    android:textColor="#212121"/>
+                    android:orientation="vertical"
+                    android:padding="@dimen/space_16">
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_arrow_right"/>
+                    <RelativeLayout
+                        android:id="@+id/layoutAkun"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:paddingVertical="12dp">
 
-            </RelativeLayout>
+                        <ImageView
+                            android:id="@+id/icUser"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/user_inactive"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:background="@color/border" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/icUser"
+                            android:layout_marginStart="12dp"
+                            android:text="Informasi Akun"
+                            android:textSize="14sp"
+                            android:textColor="#212121"/>
 
-            <RelativeLayout
-                android:id="@+id/layoutLogout"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:paddingVertical="12dp"
-                android:layout_marginTop="12dp">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:src="@drawable/ic_arrow_right"/>
+                    </RelativeLayout>
 
-                <ImageView
-                    android:id="@+id/ivLogout"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_logout"/>
+                    <TextView
+                        android:layout_marginTop="@dimen/space_16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pengaturan &amp; Kebijakan"
+                        android:textStyle="bold">
+                    </TextView>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/ivLogout"
-                    android:layout_marginStart="10dp"
-                    android:text="Keluar"
-                    android:textSize="14sp"
-                    android:textColor="@color/delete_red"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/space_8"
+                        android:background="@color/border" />
 
-            </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/layoutSyarat"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:paddingVertical="12dp">
+
+                        <ImageView
+                            android:id="@+id/icTerms"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_syarat"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/icTerms"
+                            android:layout_marginStart="12dp"
+                            android:text="Syarat dan Ketentuan"
+                            android:textSize="14sp"
+                            android:textColor="#212121"/>
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:src="@drawable/ic_arrow_right"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/layoutKebijakan"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:paddingVertical="12dp">
+
+                        <ImageView
+                            android:id="@+id/icPrivacy"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_privasi"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/icPrivacy"
+                            android:layout_marginStart="12dp"
+                            android:text="Kebijakan Privasi"
+                            android:textSize="14sp"
+                            android:textColor="#212121"/>
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:src="@drawable/ic_arrow_right"/>
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@color/border" />
+
+                    <RelativeLayout
+                        android:id="@+id/layoutLogout"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:paddingVertical="12dp"
+                        android:layout_marginTop="12dp">
+
+                        <ImageView
+                            android:id="@+id/ivLogout"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_logout"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/ivLogout"
+                            android:layout_marginStart="10dp"
+                            android:text="Keluar"
+                            android:textSize="14sp"
+                            android:textColor="@color/delete_red"/>
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 

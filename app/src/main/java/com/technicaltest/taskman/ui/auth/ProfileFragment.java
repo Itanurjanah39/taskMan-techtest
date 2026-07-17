@@ -66,18 +66,20 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupListeners() {
-        binding.btnProfile.setOnClickListener(v -> showProfileDetailBottomSheet());
+        binding.layoutAkun.setOnClickListener(v -> showProfileDetailBottomSheet());
 
         binding.layoutLogout.setOnClickListener(v -> showLogoutConfirmationDialog());
 
 
-        binding.layoutSyarat.setOnClickListener(v -> 
-            Toast.makeText(requireContext(), "Syarat dan Ketentuan belum tersedia", Toast.LENGTH_SHORT).show()
-        );
+        binding.layoutSyarat.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), TermsConditionsActivity.class);
+            startActivity(intent);
+        });
 
-        binding.layoutKebijakan.setOnClickListener(v -> 
-            Toast.makeText(requireContext(), "Kebijakan Privasi belum tersedia", Toast.LENGTH_SHORT).show()
-        );
+        binding.layoutKebijakan.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), PrivacyPolicyActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void setupObservers() {
@@ -132,6 +134,7 @@ public class ProfileFragment extends Fragment {
     private void displayProfileData(ProfileResponse.Employee employee) {
         binding.tvName.setText(employee.getName());
         binding.tvRole.setText(employee.getRole());
+        binding.tvDivision.setText("Divisi : "+ employee.getDivision());
     }
 
     private void showProfileDetailBottomSheet() {

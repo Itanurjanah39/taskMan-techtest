@@ -23,6 +23,15 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".ui.task.TaskDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.TermsConditionsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.PrivacyPolicyActivity"
+            android:exported="false" />
+        <activity
             android:name=".SplashActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" >

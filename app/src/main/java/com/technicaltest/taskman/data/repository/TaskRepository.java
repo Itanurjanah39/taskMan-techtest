@@ -4,6 +4,7 @@ import com.technicaltest.taskman.data.auth.SessionManager;
 import com.technicaltest.taskman.data.model.GenericApiResponse;
 import com.technicaltest.taskman.data.model.TaskRequest;
 import com.technicaltest.taskman.data.model.TaskResponse;
+import com.technicaltest.taskman.data.model.TaskDetailResponse;
 import com.technicaltest.taskman.data.network.PublicApiClient;
 import com.technicaltest.taskman.data.network.PublicApiService;
 import com.technicaltest.taskman.data.network.ApiCallback;
@@ -33,5 +34,9 @@ public class TaskRepository {
 
     public void deleteTask(String id, ApiCallback<GenericApiResponse> callback) {
         NetworkHelper.enqueueCall(publicApiService.deleteTask(id), callback);
+    }
+
+    public void getTaskDetail(String id, ApiCallback<TaskDetailResponse> callback) {
+        NetworkHelper.enqueueCall(publicApiService.getTaskDetail(id), callback);
     }
 }

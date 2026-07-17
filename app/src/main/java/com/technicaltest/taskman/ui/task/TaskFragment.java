@@ -1,5 +1,6 @@
 package com.technicaltest.taskman.ui.task;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
@@ -122,6 +123,13 @@ public class TaskFragment extends Fragment {
             public void onDeleteClick(TaskResponse task) {
                 showDeleteConfirmationDialog(task);
             }
+
+            @Override
+            public void onItemClick(TaskResponse task) {
+                Intent intent = new Intent(requireContext(), TaskDetailActivity.class);
+                intent.putExtra("TASK_ID", task.getId());
+                startActivity(intent);
+            }
         });
 
         binding.rvTasks.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -196,14 +204,17 @@ public class TaskFragment extends Fragment {
             if (resource == null) return;
             switch (resource.getStatus()) {
                 case LOADING:
+                    binding.progressBar.setVisibility(View.VISIBLE);
                     break;
                 case SUCCESS:
+                    binding.progressBar.setVisibility(View.GONE);
                     DialogUtils.showSuccessDialog(requireContext(), "Berhasil", "Tugas berhasil dihapus", () -> {
                         viewModel.resetDeleteResult();
                         loadData(false);
                     });
                     break;
                 case ERROR:
+                    binding.progressBar.setVisibility(View.GONE);
                     DialogUtils.showErrorDialog(requireContext(), "Gagal", "Gagal menghapus tugas: " + resource.getMessage(), () -> {
                         viewModel.resetDeleteResult();
                     });
@@ -375,7 +386,14 @@ public class TaskFragment extends Fragment {
                 "Hapus Tugas",
                 "Apakah Anda yakin ingin menghapus tugas \"" + task.getTitle() + "\"?",
                 R.drawable.img_question,
-                () -> viewModel.deleteTask(task.getId())
+                () -> {
+                    binding.rvTasks.setVisibility(View.GONE);
+                    EmptyStateUtils.hideEmptyState(binding.layoutEmpty.getRoot());
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                        viewModel.deleteTask(task.getId());
+                    }, 2000);
+                }
         );
     }
 
