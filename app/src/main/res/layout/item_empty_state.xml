@@ -18,6 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_16"
+        android:textAlignment="center"
         android:text="Tidak ada task saat ini"
         style="@style/Text.Body"/>
 

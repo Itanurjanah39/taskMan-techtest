@@ -46,7 +46,6 @@ public class LoginActivity extends AppCompatActivity {
                     binding.btnLogin.setText(R.string.login);
                     LoginResponse response = resource.getData();
                     if (response != null) {
-                        Toast.makeText(LoginActivity.this, "Login successful: " + response.getMessage(), Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
@@ -56,7 +55,12 @@ public class LoginActivity extends AppCompatActivity {
                 case ERROR:
                     binding.btnLogin.setEnabled(true);
                     binding.btnLogin.setText(R.string.login);
-                    Toast.makeText(LoginActivity.this, resource.getMessage(), Toast.LENGTH_SHORT).show();
+                    com.technicaltest.taskman.utils.DialogUtils.showErrorDialog(
+                            LoginActivity.this,
+                            "Gagal Login",
+                            resource.getMessage(),
+                            () -> {}
+                    );
                     break;
             }
         });

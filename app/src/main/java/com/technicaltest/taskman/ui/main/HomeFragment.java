@@ -71,7 +71,9 @@ public class HomeFragment extends Fragment {
                                 if (c1 == null && c2 == null) return 0;
                                 if (c1 == null) return 1;
                                 if (c2 == null) return -1;
-                                return c2.compareTo(c1);
+                                java.time.Instant i1 = com.technicaltest.taskman.utils.DateUtils.parseInstant(c1);
+                                java.time.Instant i2 = com.technicaltest.taskman.utils.DateUtils.parseInstant(c2);
+                                return i2.compareTo(i1);
                             });
                             updateSummary();
                             filterAndDisplayTasks();

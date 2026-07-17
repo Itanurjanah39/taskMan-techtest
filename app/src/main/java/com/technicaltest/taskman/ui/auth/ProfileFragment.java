@@ -26,6 +26,9 @@ public class ProfileFragment extends Fragment {
     private FragmentProfileBinding binding;
     private ProfileViewModel viewModel;
     private ProfileResponse.Data currentProfile;
+    private boolean isProfileLoaded = false;
+    private boolean isMinTimeElapsed = false;
+    private com.technicaltest.taskman.data.network.Resource<ProfileResponse> pendingProfileResource = null;
 
     public ProfileFragment() {}
 
@@ -62,6 +65,23 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadData() {
+        if (!isAdded()) return;
+
+        isProfileLoaded = false;
+        isMinTimeElapsed = false;
+        pendingProfileResource = null;
+
+        if (!binding.swipeRefresh.isRefreshing()) {
+            binding.shimmerProfile.startShimmer();
+            binding.shimmerProfile.setVisibility(View.VISIBLE);
+            binding.layoutProfileDetails.setVisibility(View.GONE);
+        }
+
+        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+            isMinTimeElapsed = true;
+            checkAndDisplayData();
+        }, 2000);
+
         viewModel.loadProfile();
     }
 
@@ -88,23 +108,13 @@ public class ProfileFragment extends Fragment {
 
             switch (resource.getStatus()) {
                 case LOADING:
-                    if (!binding.swipeRefresh.isRefreshing()) {
-                        binding.swipeRefresh.setRefreshing(true);
-                    }
+                    // Handled inside loadData()
                     break;
                 case SUCCESS:
-                    binding.swipeRefresh.setRefreshing(false);
-                    if (resource.getData() != null && resource.getData().isSuccess() && resource.getData().getData() != null) {
-                        currentProfile = resource.getData().getData();
-                        displayProfileData(currentProfile.getEmployee());
-                    } else {
-                        String msg = resource.getData() != null ? resource.getData().getMessage() : "Gagal memuat profil";
-                        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
-                    }
-                    break;
                 case ERROR:
-                    binding.swipeRefresh.setRefreshing(false);
-                    Toast.makeText(requireContext(), resource.getMessage() != null ? resource.getMessage() : "Koneksi bermasalah", Toast.LENGTH_SHORT).show();
+                    pendingProfileResource = resource;
+                    isProfileLoaded = true;
+                    checkAndDisplayData();
                     break;
             }
         });
@@ -129,6 +139,51 @@ public class ProfileFragment extends Fragment {
                     break;
             }
         });
+    }
+
+    private void checkAndDisplayData() {
+        if (!isAdded()) return;
+        if (isProfileLoaded && isMinTimeElapsed) {
+            binding.swipeRefresh.setRefreshing(false);
+            if (pendingProfileResource != null) {
+                switch (pendingProfileResource.getStatus()) {
+                    case SUCCESS:
+                        if (pendingProfileResource.getData() != null && pendingProfileResource.getData().isSuccess() && pendingProfileResource.getData().getData() != null) {
+                            binding.shimmerProfile.stopShimmer();
+                            binding.shimmerProfile.setVisibility(View.GONE);
+                            currentProfile = pendingProfileResource.getData().getData();
+                            binding.layoutProfileDetails.setVisibility(View.VISIBLE);
+                            displayProfileData(currentProfile.getEmployee());
+                        } else {
+                            // On failure (invalid data), do not hide details, keep shimmer showing
+                            binding.shimmerProfile.startShimmer();
+                            binding.shimmerProfile.setVisibility(View.VISIBLE);
+                            binding.layoutProfileDetails.setVisibility(View.GONE);
+                            String msg = pendingProfileResource.getData() != null ? pendingProfileResource.getData().getMessage() : "Gagal memuat profil";
+                            com.technicaltest.taskman.utils.DialogUtils.showErrorDialog(
+                                    requireContext(),
+                                    "Gagal Memuat Profil",
+                                    msg,
+                                    () -> {}
+                            );
+                        }
+                        break;
+                    case ERROR:
+                        // On error, do not hide details, keep shimmer showing
+                        binding.shimmerProfile.startShimmer();
+                        binding.shimmerProfile.setVisibility(View.VISIBLE);
+                        binding.layoutProfileDetails.setVisibility(View.GONE);
+                        String errorMsg = pendingProfileResource.getMessage() != null ? pendingProfileResource.getMessage() : "Koneksi bermasalah";
+                        com.technicaltest.taskman.utils.DialogUtils.showErrorDialog(
+                                requireContext(),
+                                "Gagal Memuat Profil",
+                                errorMsg,
+                                () -> {}
+                        );
+                        break;
+                }
+            }
+        }
     }
 
     private void displayProfileData(ProfileResponse.Employee employee) {

@@ -32,7 +32,8 @@ public class NetworkHelper {
                         callback.onResponse(Resource.success(body));
                     }
                 } else {
-                    callback.onResponse(Resource.error("Error: " + response.code() + " " + response.message(), null));
+                    String errorMessage = parseErrorMessage(response);
+                    callback.onResponse(Resource.error(errorMessage, null));
                 }
             }
 
@@ -42,5 +43,20 @@ public class NetworkHelper {
                 callback.onResponse(Resource.error(error, null));
             }
         });
+    }
+
+    private static String parseErrorMessage(Response<?> response) {
+        try {
+            if (response.errorBody() != null) {
+                String errorJson = response.errorBody().string();
+                org.json.JSONObject jsonObject = new org.json.JSONObject(errorJson);
+                if (jsonObject.has("message")) {
+                    return jsonObject.getString("message");
+                }
+            }
+        } catch (Exception e) {
+            // Fallback
+        }
+        return "Error: " + response.code() + " " + response.message();
     }
 }
