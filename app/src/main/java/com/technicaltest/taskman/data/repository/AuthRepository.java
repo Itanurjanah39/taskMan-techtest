@@ -7,10 +7,8 @@ import com.technicaltest.taskman.data.model.LoginResponse;
 import com.technicaltest.taskman.data.model.ProfileResponse;
 import com.technicaltest.taskman.data.network.ApiClient;
 import com.technicaltest.taskman.data.network.ApiService;
-import com.technicaltest.taskman.utils.ApiCallback;
-import com.technicaltest.taskman.utils.NetworkHelper;
-
-import retrofit2.Call;
+import com.technicaltest.taskman.data.network.ApiCallback;
+import com.technicaltest.taskman.data.network.NetworkHelper;
 
 public class AuthRepository {
 

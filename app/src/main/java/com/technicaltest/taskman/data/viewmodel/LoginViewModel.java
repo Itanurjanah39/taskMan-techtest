@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.technicaltest.taskman.data.auth.SessionManager;
 import com.technicaltest.taskman.data.model.LoginResponse;
 import com.technicaltest.taskman.data.repository.AuthRepository;
-import com.technicaltest.taskman.utils.Resource;
+import com.technicaltest.taskman.data.network.Resource;
 
 public class LoginViewModel extends AndroidViewModel {
 

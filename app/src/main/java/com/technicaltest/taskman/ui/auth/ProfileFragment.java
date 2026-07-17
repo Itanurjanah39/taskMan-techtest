@@ -20,7 +20,6 @@ import com.technicaltest.taskman.data.model.ProfileResponse;
 import com.technicaltest.taskman.data.viewmodel.ProfileViewModel;
 import com.technicaltest.taskman.databinding.DialogProfileDetailBinding;
 import com.technicaltest.taskman.databinding.FragmentProfileBinding;
-import com.technicaltest.taskman.utils.ImageLoader;
 
 public class ProfileFragment extends Fragment {
 
@@ -101,7 +100,6 @@ public class ProfileFragment extends Fragment {
                 case SUCCESS:
                     binding.swipeRefresh.setRefreshing(false);
                     if (resource.getData() != null && resource.getData().isSuccess() && resource.getData().getData() != null) {
-                        ProfileResponse.Data data = resource.getData().getData();
                         currentProfile = resource.getData().getData();
                         displayProfileData(currentProfile.getEmployee());
                     } else {
@@ -141,8 +139,6 @@ public class ProfileFragment extends Fragment {
     private void displayProfileData(ProfileResponse.Employee employee) {
         binding.tvName.setText(employee.getName());
         binding.tvRole.setText(employee.getRole());
-
-        ImageLoader.loadImage(employee.getAvatar(), binding.imgAvatar, R.drawable.ic_thumb_user);
     }
 
     private void showProfileDetailBottomSheet() {

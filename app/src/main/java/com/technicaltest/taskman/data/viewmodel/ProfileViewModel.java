@@ -11,7 +11,7 @@ import com.technicaltest.taskman.data.auth.SessionManager;
 import com.technicaltest.taskman.data.model.GenericApiResponse;
 import com.technicaltest.taskman.data.model.ProfileResponse;
 import com.technicaltest.taskman.data.repository.AuthRepository;
-import com.technicaltest.taskman.utils.Resource;
+import com.technicaltest.taskman.data.network.Resource;
 
 public class ProfileViewModel extends AndroidViewModel {
 

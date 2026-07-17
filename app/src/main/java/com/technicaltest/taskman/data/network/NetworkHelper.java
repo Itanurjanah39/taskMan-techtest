@@ -1,4 +1,4 @@
-package com.technicaltest.taskman.utils;
+package com.technicaltest.taskman.data.network;
 
 import retrofit2.Call;
 import retrofit2.Callback;

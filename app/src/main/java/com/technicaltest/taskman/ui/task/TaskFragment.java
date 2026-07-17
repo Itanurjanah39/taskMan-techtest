@@ -21,7 +21,19 @@ import com.technicaltest.taskman.data.model.TaskResponse;
 import com.technicaltest.taskman.data.viewmodel.TaskViewModel;
 import com.technicaltest.taskman.databinding.FragmentTaskBinding;
 import com.technicaltest.taskman.ui.adapter.TaskAdapter;
+import com.technicaltest.taskman.databinding.DialogEditTaskBinding;
+import com.technicaltest.taskman.data.model.TaskRequest;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.technicaltest.taskman.util.DialogUtils;
+import com.technicaltest.taskman.util.EmptyStateUtils;
 
+import android.app.DatePickerDialog;
+import android.widget.ArrayAdapter;
+import androidx.appcompat.app.AlertDialog;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,12 +81,12 @@ public class TaskFragment extends Fragment {
         taskAdapter = new TaskAdapter(new TaskAdapter.OnTaskClickListener() {
             @Override
             public void onEditClick(TaskResponse task) {
-                Toast.makeText(requireContext(), "Edit task: " + task.getTitle(), Toast.LENGTH_SHORT).show();
+                showEditTaskBottomSheet(task);
             }
 
             @Override
             public void onDeleteClick(TaskResponse task) {
-                Toast.makeText(requireContext(), "Delete task: " + task.getTitle(), Toast.LENGTH_SHORT).show();
+                showDeleteConfirmationDialog(task);
             }
         });
 
@@ -135,8 +147,52 @@ public class TaskFragment extends Fragment {
                 case ERROR:
                     binding.progressBar.setVisibility(View.GONE);
                     binding.swipeRefresh.setRefreshing(false);
-                    showError(resource.getMessage() != null ? resource.getMessage() : "Gagal mengambil task");
-                    showEmptyState();
+                    binding.rvTasks.setVisibility(View.GONE);
+                    EmptyStateUtils.showEmptyState(
+                            binding.layoutEmpty,
+                            "Gagal mengambil data. Swipe Refresh untuk memuat ulang.",
+                            R.drawable.img_question,
+                            () -> loadData(true)
+                    );
+                    taskAdapter.setTasks(new ArrayList<>());
+                    break;
+            }
+        });
+
+        viewModel.getUpdateResult().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) return;
+            switch (resource.getStatus()) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    DialogUtils.showSuccessDialog(requireContext(), "Berhasil", "Tugas berhasil diperbarui", () -> {
+                        viewModel.resetUpdateResult();
+                        loadData(false);
+                    });
+                    break;
+                case ERROR:
+                    DialogUtils.showErrorDialog(requireContext(), "Gagal", "Gagal memperbarui tugas: " + resource.getMessage(), () -> {
+                        viewModel.resetUpdateResult();
+                    });
+                    break;
+            }
+        });
+
+        viewModel.getDeleteResult().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) return;
+            switch (resource.getStatus()) {
+                case LOADING:
+                    break;
+                case SUCCESS:
+                    DialogUtils.showSuccessDialog(requireContext(), "Berhasil", "Tugas berhasil dihapus", () -> {
+                        viewModel.resetDeleteResult();
+                        loadData(false);
+                    });
+                    break;
+                case ERROR:
+                    DialogUtils.showErrorDialog(requireContext(), "Gagal", "Gagal menghapus tugas: " + resource.getMessage(), () -> {
+                        viewModel.resetDeleteResult();
+                    });
                     break;
             }
         });
@@ -235,14 +291,19 @@ public class TaskFragment extends Fragment {
             showEmptyState();
         } else {
             binding.rvTasks.setVisibility(View.VISIBLE);
-            binding.layoutEmpty.setVisibility(View.GONE);
+            EmptyStateUtils.hideEmptyState(binding.layoutEmpty);
             taskAdapter.setTasks(filteredTasks);
         }
     }
 
     private void showEmptyState() {
         binding.rvTasks.setVisibility(View.GONE);
-        binding.layoutEmpty.setVisibility(View.VISIBLE);
+        EmptyStateUtils.showEmptyState(
+                binding.layoutEmpty,
+                "Tugas tidak ditemukan",
+                R.drawable.img_question,
+                null
+        );
         taskAdapter.setTasks(new ArrayList<>());
     }
 
@@ -250,6 +311,119 @@ public class TaskFragment extends Fragment {
         if (isAdded()) {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void showEditTaskBottomSheet(TaskResponse task) {
+        BottomSheetDialog dialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetTheme);
+        DialogEditTaskBinding dialogBinding = DialogEditTaskBinding.inflate(getLayoutInflater());
+        dialog.setContentView(dialogBinding.getRoot());
+
+        dialogBinding.etTaskTitle.setText(task.getTitle());
+        dialogBinding.etTaskDescription.setText(task.getDescription());
+        dialogBinding.etTaskDeadline.setText(task.getDeadline());
+
+        // Setup Spinners
+        String[] statusOptions = {"Pending", "Done"};
+        ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, statusOptions);
+        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dialogBinding.spinnerTaskStatus.setAdapter(statusAdapter);
+
+        if (task.getStatus() != null) {
+            String status = task.getStatus().trim();
+            if (status.equalsIgnoreCase("Done") || status.equalsIgnoreCase("Selesai")) {
+                dialogBinding.spinnerTaskStatus.setSelection(1);
+            } else {
+                dialogBinding.spinnerTaskStatus.setSelection(0);
+            }
+        }
+
+        String[] typeOptions = {"Harian", "Mingguan", "Bulanan"};
+        ArrayList<String> typeList = new ArrayList<>(java.util.Arrays.asList(typeOptions));
+        if (task.getType() != null) {
+            String type = task.getType().trim();
+            if (!typeList.contains(type)) {
+                typeList.add(type);
+            }
+        }
+        ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, typeList);
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dialogBinding.spinnerTaskType.setAdapter(typeAdapter);
+
+        if (task.getType() != null) {
+            dialogBinding.spinnerTaskType.setSelection(typeList.indexOf(task.getType().trim()));
+        }
+
+        // Date Picker
+        dialogBinding.layoutDeadline.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            String currentDeadline = dialogBinding.etTaskDeadline.getText().toString().trim();
+            if (!currentDeadline.isEmpty()) {
+                try {
+                    SimpleDateFormat parser;
+                    if (currentDeadline.contains("T")) {
+                        parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+                    } else if (currentDeadline.contains("-")) {
+                        parser = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    } else {
+                        parser = new SimpleDateFormat("d MMMM yyyy", new Locale("in", "ID"));
+                    }
+                    Date parsedDate = parser.parse(currentDeadline);
+                    if (parsedDate != null) {
+                        calendar.setTime(parsedDate);
+                    }
+                } catch (Exception e) {
+                    // Fallback
+                }
+            }
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    requireContext(),
+                    (view, year, month, dayOfMonth) -> {
+                        Calendar selectedDate = Calendar.getInstance();
+                        selectedDate.set(Calendar.YEAR, year);
+                        selectedDate.set(Calendar.MONTH, month);
+                        selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        SimpleDateFormat apiFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                        dialogBinding.etTaskDeadline.setText(apiFormatter.format(selectedDate.getTime()));
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+            );
+            datePickerDialog.show();
+        });
+
+        dialogBinding.btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        dialogBinding.btnSave.setOnClickListener(v -> {
+            String title = dialogBinding.etTaskTitle.getText().toString().trim();
+            String description = dialogBinding.etTaskDescription.getText().toString().trim();
+            String status = dialogBinding.spinnerTaskStatus.getSelectedItem().toString();
+            String type = dialogBinding.spinnerTaskType.getSelectedItem().toString();
+            String deadline = dialogBinding.etTaskDeadline.getText().toString().trim();
+
+            if (title.isEmpty()) {
+                dialogBinding.etTaskTitle.setError("Judul tidak boleh kosong");
+                return;
+            }
+
+            TaskRequest request = new TaskRequest(title, description, status, type, deadline);
+            viewModel.updateTask(task.getId(), request);
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    private void showDeleteConfirmationDialog(TaskResponse task) {
+        DialogUtils.showConfirmDialog(
+                requireContext(),
+                "Hapus Tugas",
+                "Apakah Anda yakin ingin menghapus tugas \"" + task.getTitle() + "\"?",
+                R.drawable.img_question,
+                () -> viewModel.deleteTask(task.getId())
+        );
     }
 
     @Override

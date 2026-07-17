@@ -13,16 +13,35 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/space_16"
+            android:orientation="horizontal"
             android:layout_marginTop="@dimen/space_24"
-            android:text="Daftar Tugas"
-            style="@style/Text.Title"
-            android:textSize="18sp"/>
+            android:layout_marginHorizontal="@dimen/space_16">
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Daftar Tugas"
+                style="@style/Text.Title"
+                android:textSize="18sp"/>
 
-        <!-- Search Bar -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/addNewTask"
+                android:layout_gravity="center_vertical"
+                android:paddingHorizontal="@dimen/space_16"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_button_outline"
+                android:text="+ Task Baru"
+                android:textAllCaps="false"
+                android:textColor="@color/primary"
+                style="@style/Text.Button"/>
+        </LinearLayout>
+
+
         <EditText
             android:id="@+id/et_search"
             android:layout_width="match_parent"
@@ -47,7 +66,7 @@
             android:layout_marginTop="@dimen/space_16"
             android:orientation="horizontal">
 
-            <!-- Semua Chip -->
+
             <TextView
                 android:id="@+id/chip_semua"
                 android:layout_width="0dp"
@@ -61,7 +80,7 @@
                 android:clickable="true"
                 android:focusable="true"/>
 
-            <!-- Pending Chip -->
+
             <TextView
                 android:id="@+id/chip_pending"
                 android:layout_width="0dp"
@@ -75,7 +94,7 @@
                 android:clickable="true"
                 android:focusable="true"/>
 
-            <!-- Done Chip -->
+
             <TextView
                 android:id="@+id/chip_done"
                 android:layout_width="0dp"
@@ -90,13 +109,13 @@
 
         </LinearLayout>
 
-        <!-- Container for list / progress / empty states -->
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/space_8">
 
-            <!-- RecyclerView -->
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_tasks"
                 android:layout_width="match_parent"
@@ -105,7 +124,7 @@
                 android:paddingBottom="@dimen/space_24"
                 tools:listitem="@layout/item_task" />
 
-            <!-- Empty State View -->
+
             <LinearLayout
                 android:id="@+id/layout_empty"
                 android:layout_width="match_parent"
@@ -130,7 +149,7 @@
 
             </LinearLayout>
 
-            <!-- Loading ProgressBar -->
+
             <ProgressBar
                 android:id="@+id/progress_bar"
                 android:layout_width="wrap_content"

@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/space_16"
                 android:layout_marginTop="@dimen/space_16"
-                app:cardBackgroundColor="@color/secondary_light"
+                app:cardBackgroundColor="@color/background_secondary"
                 app:cardCornerRadius="18dp"
                 app:strokeWidth="0dp"
                 app:cardElevation="0dp">
@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/space_16">
 
-                    <!-- Text Greeting -->
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
 
             </LinearLayout>
 
-            <!-- Summary Section Heading -->
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -137,7 +137,7 @@
                 android:textColor="@color/text_primary"
                 style="@style/Text.Title" />
 
-            <!-- Summary Cards Row -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -145,7 +145,7 @@
                 android:layout_marginTop="@dimen/space_8"
                 android:orientation="horizontal">
 
-                <!-- Total Task Card -->
+
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -279,7 +279,6 @@
 
             </RelativeLayout>
 
-            <!-- Task List RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_tasks"
                 android:layout_width="match_parent"
@@ -289,7 +288,6 @@
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_task" />
 
-            <!-- Empty State View -->
             <LinearLayout
                 android:id="@+id/layout_empty"
                 android:layout_width="match_parent"
@@ -313,7 +311,6 @@
 
             </LinearLayout>
 
-            <!-- Progress Bar / Loading -->
             <ProgressBar
                 android:id="@+id/progress_bar"
                 android:layout_width="wrap_content"

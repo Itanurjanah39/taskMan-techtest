@@ -1,4 +1,4 @@
-package com.technicaltest.taskman.utils;
+package com.technicaltest.taskman.data.network;
 
 public class Resource<T> {
 

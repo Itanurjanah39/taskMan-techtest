@@ -13,7 +13,6 @@ import com.technicaltest.taskman.R;
 import com.technicaltest.taskman.data.model.LoginResponse;
 import com.technicaltest.taskman.data.viewmodel.LoginViewModel;
 import com.technicaltest.taskman.databinding.ActivityLoginBinding;
-import com.technicaltest.taskman.utils.Resource;
 
 public class LoginActivity extends AppCompatActivity {
 
