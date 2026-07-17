@@ -44,6 +44,14 @@ Digunakan untuk mengelola data tugas (CRUD).
 *   `PUT api/tasks/{id}` : Memperbarui detail tugas yang sudah ada.
 *   `DELETE api/tasks/{id}` : Menghapus tugas berdasarkan ID.
 
+### C. Fitur Halaman Daftar Tugas (`TaskFragment`)
+Halaman daftar tugas dilengkapi dengan fitur pencarian dan penyaringan data secara realtime pada sisi UI:
+*   **Kolom Pencarian (Search Bar):** Memungkinkan pengguna mengetik kata kunci untuk mencari tugas berdasarkan judul secara langsung.
+*   **Penyaringan Status (Filter by Status):** Menyediakan kontrol filter berbasis Chip untuk memilah tugas berdasarkan statusnya:
+    *   **Semua**: Menampilkan seluruh data tugas yang tersedia.
+    *   **Pending**: Hanya menampilkan tugas yang berstatus belum selesai.
+    *   **Done**: Hanya menampilkan tugas yang sudah selesai dikerjakan.
+
 ---
 
 ## 3. Penyimpanan Sesi Pengguna (Session Storage)
