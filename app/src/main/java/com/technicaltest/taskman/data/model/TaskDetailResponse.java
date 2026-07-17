@@ -2,7 +2,7 @@ package com.technicaltest.taskman.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class TaskResponse {
+public class TaskDetailResponse {
 
     @SerializedName("id")
     private String id;

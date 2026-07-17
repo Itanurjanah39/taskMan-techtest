@@ -52,6 +52,7 @@ dependencies {
     annotationProcessor(libs.room.compiler)
     implementation(libs.shimmer)
     implementation(libs.swiperefreshlayout)
+    implementation(libs.circleimageview)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)

@@ -16,32 +16,45 @@ public class AuthRepository {
     private final SessionManager sessionManager;
 
     public AuthRepository(SessionManager sessionManager) {
-        this.apiService = ApiClient.getApiService();
         this.sessionManager = sessionManager;
+        this.apiService = ApiClient.getService(sessionManager);
     }
 
     public void login(String email, String password, ApiCallback<LoginResponse> callback) {
+
         LoginRequest request = new LoginRequest(email, password);
-        Call<LoginResponse> call = apiService.login(request);
 
-        NetworkHelper.enqueueCall(call, callback, new NetworkHelper.ResponseValidator<LoginResponse>() {
-            @Override
-            public boolean isValid(LoginResponse body) {
-                boolean valid = body.isSuccess() && body.getData() != null;
-                if (valid) {
-                    sessionManager.saveSession(
-                            body.getData().getToken(),
-                            body.getData().getRole(),
-                            email
-                    );
+        NetworkHelper.enqueueCall(
+                apiService.login(request),
+                callback,
+                new NetworkHelper.ResponseValidator<LoginResponse>() {
+
+                    @Override
+                    public boolean isValid(LoginResponse body) {
+
+                        boolean valid =
+                                body != null &&
+                                        body.isSuccess() &&
+                                        body.getData() != null;
+
+                        if (valid) {
+                            sessionManager.saveSession(
+                                    body.getData().getToken(),
+                                    body.getData().getRole(),
+                                    email
+                            );
+                        }
+
+                        return valid;
+                    }
+
+                    @Override
+                    public String getErrorMessage(LoginResponse body) {
+                        return body != null && body.getMessage() != null
+                                ? body.getMessage()
+                                : "Login failed";
+                    }
                 }
-                return valid;
-            }
-
-            @Override
-            public String getErrorMessage(LoginResponse body) {
-                return body.getMessage() != null ? body.getMessage() : "Login failed";
-            }
-        });
+        );
     }
 }
