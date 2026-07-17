@@ -64,6 +64,24 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             loadFragment(new HomeFragment());
         }
+
+        // Handle custom back press navigation
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (binding.bottomNavigation.getSelectedItemId() != R.id.nav_home) {
+                    binding.bottomNavigation.setSelectedItemId(R.id.nav_home);
+                } else {
+                    finish();
+                }
+            }
+        });
+    }
+
+    public void navigateToTaskFragment() {
+        if (binding != null && binding.bottomNavigation != null) {
+            binding.bottomNavigation.setSelectedItemId(R.id.nav_task);
+        }
     }
 
     private void loadFragment(Fragment fragment) {

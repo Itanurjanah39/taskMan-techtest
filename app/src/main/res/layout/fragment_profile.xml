@@ -13,7 +13,7 @@
         <ImageView
             android:id="@+id/imgHeader"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="120dp"
             android:scaleType="centerCrop"
             android:src="@drawable/bg_profile" />
 
@@ -21,7 +21,7 @@
             android:id="@+id/layoutProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="95dp"
+            android:layout_marginTop="75dp"
             android:layout_marginStart="1dp"
             android:layout_marginEnd="1dp"
             android:padding="16dp">
@@ -37,32 +37,17 @@
                 app:civ_circle_background_color="@color/background" />
 
 
-            <!-- EDIT ICON -->
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgEdit"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:layout_alignBottom="@id/imgAvatar"
-                android:layout_alignEnd="@id/imgAvatar"
-                app:civ_circle_background_color="@color/background_secondary"
-                app:civ_border_width="2dp"
-                app:civ_border_color="@color/white"
-                android:src="@drawable/ic_pen"/>
 
-            <!-- NAME -->
             <TextView
                 android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:layout_marginTop="20dp"
                 android:layout_toEndOf="@id/imgAvatar"
-                android:text="User"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:text="........"
+                style="@style/Text.Button" />
 
-            <!-- ROLE -->
+
             <TextView
                 android:id="@+id/tvRole"
                 android:layout_width="wrap_content"
@@ -70,13 +55,13 @@
                 android:layout_below="@id/tvName"
                 android:layout_toEndOf="@id/imgAvatar"
                 android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"/>
+                android:layout_marginTop="@dimen/space_12"
+                android:text="-"
+                style="@style/Text.Subtitle"/>
 
         </RelativeLayout>
 
-        <!-- MENU CONTAINER -->
+
         <LinearLayout
             android:id="@+id/layoutMenu"
             android:layout_width="match_parent"
@@ -92,11 +77,10 @@
                 android:background="@drawable/bg_button_outline"
                 android:textAllCaps="false"
                 android:textColor="@color/primary"
-                android:layout_marginHorizontal="6dp"
+                android:layout_marginHorizontal="22dp"
                 android:text="Lihat Profil"
                 android:layout_marginVertical="3dp"/>
 
-            <!-- PENGATURAN -->
             <View
                 android:layout_width="match_parent"
                 android:layout_marginTop="@dimen/space_12"
@@ -110,35 +94,6 @@
                 android:layout_marginTop="22dp"
                 android:textStyle="bold">
             </TextView>
-            <RelativeLayout
-                android:id="@+id/idLayoutBantuan"
-                android:layout_marginTop="16dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="12dp">
-
-                <ImageView
-                    android:id="@+id/icHelp"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_info"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/icHelp"
-                    android:layout_marginStart="12dp"
-                    android:text="Pusat Bantuan"
-                    android:textSize="14sp"
-                    android:textColor="#212121"/>
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_arrow_right"/>
-            </RelativeLayout>
-
 
             <RelativeLayout
                 android:id="@+id/layoutSyarat"

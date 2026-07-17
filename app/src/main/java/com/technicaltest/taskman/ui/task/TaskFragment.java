@@ -21,17 +21,9 @@ import com.technicaltest.taskman.data.model.TaskResponse;
 import com.technicaltest.taskman.data.viewmodel.TaskViewModel;
 import com.technicaltest.taskman.databinding.FragmentTaskBinding;
 import com.technicaltest.taskman.ui.adapter.TaskAdapter;
-import com.technicaltest.taskman.databinding.DialogEditTaskBinding;
-import com.technicaltest.taskman.data.model.TaskRequest;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.technicaltest.taskman.util.DialogUtils;
-import com.technicaltest.taskman.util.EmptyStateUtils;
+import com.technicaltest.taskman.utils.DialogUtils;
+import com.technicaltest.taskman.utils.EmptyStateUtils;
 
-import android.app.DatePickerDialog;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +66,7 @@ public class TaskFragment extends Fragment {
                     case ERROR:
                         binding.rvTasks.setVisibility(View.GONE);
                         EmptyStateUtils.showEmptyState(
-                                binding.layoutEmpty,
+                                binding.layoutEmpty.getRoot(),
                                 "Gagal mengambil data. Ketuk untuk memuat ulang.",
                                 R.drawable.img_question,
                                 () -> loadData(true)
@@ -288,7 +280,7 @@ public class TaskFragment extends Fragment {
         if (showProgressBar) {
             binding.progressBar.setVisibility(View.VISIBLE);
             binding.rvTasks.setVisibility(View.GONE);
-            EmptyStateUtils.hideEmptyState(binding.layoutEmpty);
+            EmptyStateUtils.hideEmptyState(binding.layoutEmpty.getRoot());
 
             isTasksLoaded = false;
             isMinTimeElapsed = false;
@@ -345,7 +337,7 @@ public class TaskFragment extends Fragment {
             showEmptyState();
         } else {
             binding.rvTasks.setVisibility(View.VISIBLE);
-            EmptyStateUtils.hideEmptyState(binding.layoutEmpty);
+            EmptyStateUtils.hideEmptyState(binding.layoutEmpty.getRoot());
             taskAdapter.setTasks(filteredTasks);
         }
     }
@@ -353,7 +345,7 @@ public class TaskFragment extends Fragment {
     private void showEmptyState() {
         binding.rvTasks.setVisibility(View.GONE);
         EmptyStateUtils.showEmptyState(
-                binding.layoutEmpty,
+                binding.layoutEmpty.getRoot(),
                 "Tugas tidak ditemukan",
                 R.drawable.img_question,
                 null
@@ -367,232 +359,14 @@ public class TaskFragment extends Fragment {
         }
     }
 
-    private String selectedType = "Harian";
-    private String selectedStatus = "Pending";
-
-    private void updateTypeSelection(DialogEditTaskBinding dialogBinding, String type) {
-        selectedType = type;
-        int activeColor = ContextCompat.getColor(requireContext(), R.color.primary);
-        int inactiveColor = ContextCompat.getColor(requireContext(), R.color.white);
-        int activeTextColor = ContextCompat.getColor(requireContext(), R.color.white);
-        int inactiveTextColor = ContextCompat.getColor(requireContext(), R.color.text_primary);
-        int inactiveSubColor = ContextCompat.getColor(requireContext(), R.color.text_secondary);
-        int inactiveBorderColor = ContextCompat.getColor(requireContext(), R.color.border);
-
-
-        dialogBinding.btnTypeHarian.setCardBackgroundColor(inactiveColor);
-        dialogBinding.btnTypeHarian.setStrokeColor(inactiveBorderColor);
-        dialogBinding.ivTypeHarian.setColorFilter(activeColor);
-        dialogBinding.tvTypeHarianTitle.setTextColor(inactiveTextColor);
-
-        dialogBinding.btnTypeMingguan.setCardBackgroundColor(inactiveColor);
-        dialogBinding.btnTypeMingguan.setStrokeColor(inactiveBorderColor);
-        dialogBinding.ivTypeMingguan.setColorFilter(activeColor);
-        dialogBinding.tvTypeMingguanTitle.setTextColor(inactiveTextColor);
-
-        dialogBinding.btnTypeBulanan.setCardBackgroundColor(inactiveColor);
-        dialogBinding.btnTypeBulanan.setStrokeColor(inactiveBorderColor);
-        dialogBinding.ivTypeBulanan.setColorFilter(activeColor);
-        dialogBinding.tvTypeBulananTitle.setTextColor(inactiveTextColor);
-
-        // Set active
-        if (type.equalsIgnoreCase("Harian")) {
-            dialogBinding.btnTypeHarian.setCardBackgroundColor(activeColor);
-            dialogBinding.btnTypeHarian.setStrokeColor(activeColor);
-            dialogBinding.ivTypeHarian.setColorFilter(activeTextColor);
-            dialogBinding.tvTypeHarianTitle.setTextColor(activeTextColor);
-
-        } else if (type.equalsIgnoreCase("Mingguan")) {
-            dialogBinding.btnTypeMingguan.setCardBackgroundColor(activeColor);
-            dialogBinding.btnTypeMingguan.setStrokeColor(activeColor);
-            dialogBinding.ivTypeMingguan.setColorFilter(activeTextColor);
-            dialogBinding.tvTypeMingguanTitle.setTextColor(activeTextColor);
-
-        } else if (type.equalsIgnoreCase("Bulanan")) {
-            dialogBinding.btnTypeBulanan.setCardBackgroundColor(activeColor);
-            dialogBinding.btnTypeBulanan.setStrokeColor(activeColor);
-            dialogBinding.ivTypeBulanan.setColorFilter(activeTextColor);
-            dialogBinding.tvTypeBulananTitle.setTextColor(activeTextColor);
-
-        }
-    }
-
-    private void updateStatusSelection(DialogEditTaskBinding dialogBinding, String status) {
-        selectedStatus = status;
-        int activeColor = ContextCompat.getColor(requireContext(), R.color.primary);
-        int inactiveColor = ContextCompat.getColor(requireContext(), R.color.white);
-        int activeTextColor = ContextCompat.getColor(requireContext(), R.color.white);
-        int inactiveTextColor = ContextCompat.getColor(requireContext(), R.color.text_primary);
-        int inactiveBorderColor = ContextCompat.getColor(requireContext(), R.color.border);
-
-        // Reset
-        dialogBinding.btnStatusPending.setCardBackgroundColor(inactiveColor);
-        dialogBinding.btnStatusPending.setStrokeColor(inactiveBorderColor);
-        dialogBinding.ivStatusPending.setColorFilter(activeColor);
-        dialogBinding.tvStatusPending.setTextColor(inactiveTextColor);
-
-        dialogBinding.btnStatusDone.setCardBackgroundColor(inactiveColor);
-        dialogBinding.btnStatusDone.setStrokeColor(inactiveBorderColor);
-        dialogBinding.ivStatusDone.setColorFilter(activeColor);
-        dialogBinding.tvStatusDone.setTextColor(inactiveTextColor);
-
-        // Set active
-        if (status.equalsIgnoreCase("Done") || status.equalsIgnoreCase("Selesai")) {
-            dialogBinding.btnStatusDone.setCardBackgroundColor(activeColor);
-            dialogBinding.btnStatusDone.setStrokeColor(activeColor);
-            dialogBinding.ivStatusDone.setColorFilter(activeTextColor);
-            dialogBinding.tvStatusDone.setTextColor(activeTextColor);
-        } else {
-            dialogBinding.btnStatusPending.setCardBackgroundColor(activeColor);
-            dialogBinding.btnStatusPending.setStrokeColor(activeColor);
-            dialogBinding.ivStatusPending.setColorFilter(activeTextColor);
-            dialogBinding.tvStatusPending.setTextColor(activeTextColor);
-        }
-    }
-
     private void showTaskBottomSheet(TaskResponse task) {
-        BottomSheetDialog dialog = new BottomSheetDialog(requireContext(), R.style.BottomSheetTheme);
-        DialogEditTaskBinding dialogBinding = DialogEditTaskBinding.inflate(getLayoutInflater());
-        dialog.setContentView(dialogBinding.getRoot());
-
-        // Default state
-        selectedType = "Harian";
-        selectedStatus = "Pending";
-
-        if (task == null) {
-            dialogBinding.tvDialogTitle.setText("Buat task baru");
-            dialogBinding.tvDialogSubtitle.setText("Isi detail task dengan lengkap agar lebih terorganisir");
-            dialogBinding.btnSaveTask.setText("SIMPAN TASK");
-
-            dialogBinding.etTaskTitle.setText("");
-            dialogBinding.etTaskDescription.setText("");
-            dialogBinding.etTaskDeadline.setText("");
-        } else {
-            dialogBinding.tvDialogTitle.setText("Edit task");
-            dialogBinding.tvDialogSubtitle.setText("Perbarui detail task sesuai kebutuhan");
-            dialogBinding.btnSaveTask.setText("UPDATE TASK");
-
-            dialogBinding.etTaskTitle.setText(task.getTitle());
-            dialogBinding.etTaskDescription.setText(task.getDescription());
-            dialogBinding.etTaskDeadline.setText(task.getDeadline());
-
-            if (task.getType() != null) {
-                selectedType = task.getType().trim();
-            }
-            if (task.getStatus() != null) {
-                selectedStatus = task.getStatus().trim();
-            }
-        }
-
-        // Initialize selections
-        updateTypeSelection(dialogBinding, selectedType);
-        updateStatusSelection(dialogBinding, selectedStatus);
-
-        // Click listeners for type cards
-        dialogBinding.btnTypeHarian.setOnClickListener(v -> updateTypeSelection(dialogBinding, "Harian"));
-        dialogBinding.btnTypeMingguan.setOnClickListener(v -> updateTypeSelection(dialogBinding, "Mingguan"));
-        dialogBinding.btnTypeBulanan.setOnClickListener(v -> updateTypeSelection(dialogBinding, "Bulanan"));
-
-        // Click listeners for status cards
-        dialogBinding.btnStatusPending.setOnClickListener(v -> updateStatusSelection(dialogBinding, "Pending"));
-        dialogBinding.btnStatusDone.setOnClickListener(v -> updateStatusSelection(dialogBinding, "Done"));
-
-        // Description char counter
-        dialogBinding.tvCharCount.setText(dialogBinding.etTaskDescription.getText().length() + "/300");
-        dialogBinding.etTaskDescription.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                dialogBinding.tvCharCount.setText(s.length() + "/300");
-            }
-
-            @Override
-            public void afterTextChanged(android.text.Editable s) {}
-        });
-
-        // Deadline input clear button visibility
-        dialogBinding.etTaskDeadline.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    dialogBinding.btnClearDeadline.setVisibility(View.VISIBLE);
-                } else {
-                    dialogBinding.btnClearDeadline.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(android.text.Editable s) {}
-        });
-        dialogBinding.btnClearDeadline.setOnClickListener(v -> dialogBinding.etTaskDeadline.setText(""));
-
-        // Date Picker
-        dialogBinding.layoutDeadline.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-            String currentDeadline = dialogBinding.etTaskDeadline.getText().toString().trim();
-            if (!currentDeadline.isEmpty()) {
-                try {
-                    SimpleDateFormat parser;
-                    if (currentDeadline.contains("T")) {
-                        parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
-                    } else if (currentDeadline.contains("-")) {
-                        parser = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                    } else {
-                        parser = new SimpleDateFormat("d MMMM yyyy", new Locale("in", "ID"));
-                    }
-                    Date parsedDate = parser.parse(currentDeadline);
-                    if (parsedDate != null) {
-                        calendar.setTime(parsedDate);
-                    }
-                } catch (Exception e) {
-                    // Fallback
-                }
-            }
-
-            DatePickerDialog datePickerDialog = new DatePickerDialog(
-                    requireContext(),
-                    (view, year, month, dayOfMonth) -> {
-                        Calendar selectedDate = Calendar.getInstance();
-                        selectedDate.set(Calendar.YEAR, year);
-                        selectedDate.set(Calendar.MONTH, month);
-                        selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-                        SimpleDateFormat apiFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                        dialogBinding.etTaskDeadline.setText(apiFormatter.format(selectedDate.getTime()));
-                    },
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)
-            );
-            datePickerDialog.show();
-        });
-
-        // Save action
-        dialogBinding.btnSaveTask.setOnClickListener(v -> {
-            String title = dialogBinding.etTaskTitle.getText().toString().trim();
-            String description = dialogBinding.etTaskDescription.getText().toString().trim();
-            String deadline = dialogBinding.etTaskDeadline.getText().toString().trim();
-
-            if (title.isEmpty()) {
-                dialogBinding.etTaskTitle.setError("Judul tidak boleh kosong");
-                return;
-            }
-
-            TaskRequest request = new TaskRequest(title, description, selectedStatus, selectedType, deadline);
+        DialogUtils.showTaskBottomSheet(requireContext(), getLayoutInflater(), task, request -> {
             if (task == null) {
                 viewModel.createTask(request);
             } else {
                 viewModel.updateTask(task.getId(), request);
             }
-            dialog.dismiss();
         });
-
-        dialog.show();
     }
 
     private void showDeleteConfirmationDialog(TaskResponse task) {

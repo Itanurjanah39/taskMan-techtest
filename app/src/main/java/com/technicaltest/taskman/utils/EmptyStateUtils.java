@@ -1,4 +1,4 @@
-package com.technicaltest.taskman.util;
+package com.technicaltest.taskman.utils;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -15,17 +15,19 @@ public class EmptyStateUtils {
         if (emptyLayout == null) return;
         emptyLayout.setVisibility(View.VISIBLE);
 
-        ImageView imageView = null;
-        TextView textView = null;
+        ImageView imageView = emptyLayout.findViewById(R.id.img_empty_state);
+        TextView textView = emptyLayout.findViewById(R.id.tv_empty_state);
 
-        if (emptyLayout instanceof android.view.ViewGroup) {
-            android.view.ViewGroup group = (android.view.ViewGroup) emptyLayout;
-            for (int i = 0; i < group.getChildCount(); i++) {
-                View child = group.getChildAt(i);
-                if (child instanceof ImageView) {
-                    imageView = (ImageView) child;
-                } else if (child instanceof TextView) {
-                    textView = (TextView) child;
+        if (imageView == null || textView == null) {
+            if (emptyLayout instanceof android.view.ViewGroup) {
+                android.view.ViewGroup group = (android.view.ViewGroup) emptyLayout;
+                for (int i = 0; i < group.getChildCount(); i++) {
+                    View child = group.getChildAt(i);
+                    if (child instanceof ImageView) {
+                        if (imageView == null) imageView = (ImageView) child;
+                    } else if (child instanceof TextView) {
+                        if (textView == null) textView = (TextView) child;
+                    }
                 }
             }
         }

@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,6 +19,7 @@ import com.technicaltest.taskman.data.model.ProfileResponse;
 import com.technicaltest.taskman.data.viewmodel.ProfileViewModel;
 import com.technicaltest.taskman.databinding.DialogProfileDetailBinding;
 import com.technicaltest.taskman.databinding.FragmentProfileBinding;
+import com.technicaltest.taskman.utils.DialogUtils;
 
 public class ProfileFragment extends Fragment {
 
@@ -68,15 +68,8 @@ public class ProfileFragment extends Fragment {
     private void setupListeners() {
         binding.btnProfile.setOnClickListener(v -> showProfileDetailBottomSheet());
 
-        binding.imgEdit.setOnClickListener(v -> 
-            Toast.makeText(requireContext(), "Fitur ubah foto profil belum tersedia", Toast.LENGTH_SHORT).show()
-        );
-
         binding.layoutLogout.setOnClickListener(v -> showLogoutConfirmationDialog());
 
-        binding.idLayoutBantuan.setOnClickListener(v -> 
-            Toast.makeText(requireContext(), "Pusat Bantuan belum tersedia", Toast.LENGTH_SHORT).show()
-        );
 
         binding.layoutSyarat.setOnClickListener(v -> 
             Toast.makeText(requireContext(), "Syarat dan Ketentuan belum tersedia", Toast.LENGTH_SHORT).show()
@@ -175,12 +168,13 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showLogoutConfirmationDialog() {
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Keluar Aplikasi")
-                .setMessage("Apakah Anda yakin ingin keluar dari aplikasi?")
-                .setPositiveButton("Ya", (dialog, which) -> viewModel.logout())
-                .setNegativeButton("Batal", (dialog, which) -> dialog.dismiss())
-                .show();
+        DialogUtils.showConfirmDialog(
+                requireContext(),
+                "Keluar Aplikasi",
+                "Apakah Anda yakin ingin keluar dari aplikasi?",
+                R.drawable.img_question,
+                () -> viewModel.logout()
+        );
     }
 
     private void navigateToLoginActivity() {
