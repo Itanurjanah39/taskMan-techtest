@@ -1,65 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
 
     <style name="Text" />
 
     <style name="Text.Title">
-
-        <item name="android:textSize">16dp</item>
-
+        <item name="android:textSize">@dimen/text_title_size</item>
         <item name="android:textStyle">bold</item>
-
         <item name="android:textColor">@color/text_primary</item>
-
     </style>
 
     <style name="Text.Subtitle">
-
-        <item name="android:textSize">15sp</item>
-
+        <item name="android:textSize">@dimen/text_subtitle_size</item>
         <item name="android:textColor">@color/text_secondary</item>
-
     </style>
+
     <style name="Text.Input">
-
-        <item name="android:textSize">15sp</item>
-
+        <item name="android:textSize">@dimen/text_input_size</item>
         <item name="android:textColor">@color/text_primary</item>
-
     </style>
 
     <style name="Text.Body">
-
-        <item name="android:textSize">14sp</item>
-
+        <item name="android:textSize">@dimen/text_body_size</item>
         <item name="android:textColor">@color/text_secondary</item>
-
     </style>
 
     <style name="Text.Status">
-
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/text_status_size</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/pending_text</item>
-
     </style>
 
     <style name="Text.Caption">
-
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/text_caption_size</item>
         <item name="android:textColor">@color/text_secondary</item>
-
     </style>
 
     <style name="Text.Button">
-
-        <item name="android:textSize">15sp</item>
-
+        <item name="android:textSize">@dimen/text_button_size</item>
         <item name="android:textStyle">bold</item>
-
         <item name="android:textColor">@color/white</item>
-
     </style>
 
 </resources>

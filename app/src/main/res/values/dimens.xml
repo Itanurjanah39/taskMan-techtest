@@ -29,4 +29,19 @@
     <!-- Toolbar -->
     <dimen name="toolbar_height">56dp</dimen>
 
+    <!-- Responsive Layout Spacings (Phone defaults) -->
+    <dimen name="layout_padding_horizontal">16dp</dimen>
+    <dimen name="page_padding_horizontal">0dp</dimen>
+    <dimen name="dialog_padding_horizontal">24dp</dimen>
+    <dimen name="profile_padding_horizontal">20dp</dimen>
+
+    <!-- Typography (Phone defaults) -->
+    <dimen name="text_title_size">16sp</dimen>
+    <dimen name="text_subtitle_size">15sp</dimen>
+    <dimen name="text_input_size">15sp</dimen>
+    <dimen name="text_body_size">14sp</dimen>
+    <dimen name="text_status_size">12sp</dimen>
+    <dimen name="text_caption_size">12sp</dimen>
+    <dimen name="text_button_size">15sp</dimen>
+
 </resources>

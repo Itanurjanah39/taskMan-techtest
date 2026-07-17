@@ -56,6 +56,7 @@ public class HomeFragment extends Fragment {
 
             // Process Tasks
             if (pendingTasksResource != null) {
+                binding.progressBar.stopShimmer();
                 binding.progressBar.setVisibility(View.GONE);
                 binding.swipeRefresh.setRefreshing(false);
 
@@ -201,9 +202,11 @@ public class HomeFragment extends Fragment {
             if (resource == null) return;
             switch (resource.getStatus()) {
                 case LOADING:
+                    binding.progressBar.startShimmer();
                     binding.progressBar.setVisibility(View.VISIBLE);
                     break;
                 case SUCCESS:
+                    binding.progressBar.stopShimmer();
                     binding.progressBar.setVisibility(View.GONE);
                     DialogUtils.showSuccessDialog(requireContext(), "Berhasil", "Tugas berhasil dihapus", () -> {
                         viewModel.resetDeleteResult();
@@ -211,6 +214,7 @@ public class HomeFragment extends Fragment {
                     });
                     break;
                 case ERROR:
+                    binding.progressBar.stopShimmer();
                     binding.progressBar.setVisibility(View.GONE);
                     DialogUtils.showErrorDialog(requireContext(), "Gagal", "Gagal menghapus tugas: " + resource.getMessage(), () -> {
                         viewModel.resetDeleteResult();
@@ -224,6 +228,7 @@ public class HomeFragment extends Fragment {
         if (!isAdded()) return;
 
         if (showProgressBar) {
+            binding.progressBar.startShimmer();
             binding.progressBar.setVisibility(View.VISIBLE);
             binding.rvTasks.setVisibility(View.GONE);
             binding.showAll.setVisibility(View.GONE);
@@ -286,8 +291,8 @@ public class HomeFragment extends Fragment {
             binding.rvTasks.setVisibility(View.VISIBLE);
             EmptyStateUtils.hideEmptyState(binding.layoutEmpty.getRoot());
             List<TaskResponse> displayedTasks;
-            if (filteredTasks.size() > 5) {
-                displayedTasks = filteredTasks.subList(0, 5);
+            if (filteredTasks.size() > 10) {
+                displayedTasks = filteredTasks.subList(0, 10);
             } else {
                 displayedTasks = filteredTasks;
             }
@@ -325,6 +330,7 @@ public class HomeFragment extends Fragment {
                 () -> {
                     binding.rvTasks.setVisibility(View.GONE);
                     EmptyStateUtils.hideEmptyState(binding.layoutEmpty.getRoot());
+                    binding.progressBar.startShimmer();
                     binding.progressBar.setVisibility(View.VISIBLE);
                     binding.showAll.setVisibility(View.GONE);
                     new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {

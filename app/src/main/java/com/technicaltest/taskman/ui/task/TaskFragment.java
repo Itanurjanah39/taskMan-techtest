@@ -45,6 +45,7 @@ public class TaskFragment extends Fragment {
         if (!isAdded()) return;
         if (isTasksLoaded && isMinTimeElapsed) {
             if (pendingTasksResource != null) {
+                binding.progressBar.stopShimmer();
                 binding.progressBar.setVisibility(View.GONE);
                 binding.swipeRefresh.setRefreshing(false);
 
@@ -204,9 +205,11 @@ public class TaskFragment extends Fragment {
             if (resource == null) return;
             switch (resource.getStatus()) {
                 case LOADING:
+                    binding.progressBar.startShimmer();
                     binding.progressBar.setVisibility(View.VISIBLE);
                     break;
                 case SUCCESS:
+                    binding.progressBar.stopShimmer();
                     binding.progressBar.setVisibility(View.GONE);
                     DialogUtils.showSuccessDialog(requireContext(), "Berhasil", "Tugas berhasil dihapus", () -> {
                         viewModel.resetDeleteResult();
@@ -214,6 +217,7 @@ public class TaskFragment extends Fragment {
                     });
                     break;
                 case ERROR:
+                    binding.progressBar.stopShimmer();
                     binding.progressBar.setVisibility(View.GONE);
                     DialogUtils.showErrorDialog(requireContext(), "Gagal", "Gagal menghapus tugas: " + resource.getMessage(), () -> {
                         viewModel.resetDeleteResult();
@@ -289,6 +293,7 @@ public class TaskFragment extends Fragment {
         if (!isAdded()) return;
 
         if (showProgressBar) {
+            binding.progressBar.startShimmer();
             binding.progressBar.setVisibility(View.VISIBLE);
             binding.rvTasks.setVisibility(View.GONE);
             EmptyStateUtils.hideEmptyState(binding.layoutEmpty.getRoot());
@@ -389,6 +394,7 @@ public class TaskFragment extends Fragment {
                 () -> {
                     binding.rvTasks.setVisibility(View.GONE);
                     EmptyStateUtils.hideEmptyState(binding.layoutEmpty.getRoot());
+                    binding.progressBar.startShimmer();
                     binding.progressBar.setVisibility(View.VISIBLE);
                     new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
                         viewModel.deleteTask(task.getId());
